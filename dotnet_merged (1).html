@@ -1,0 +1,2918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ASI .NET — Plateforme de Révision Complète</title>
+<style>
+:root{
+  --bg:#0b0f19;--card:#111827;--card2:#1a2035;--border:#1e2d45;
+  --accent:#3b82f6;--accent2:#8b5cf6;--green:#10b981;--yellow:#f59e0b;
+  --red:#ef4444;--orange:#f97316;--cyan:#06b6d4;--pink:#ec4899;
+  --text:#e2e8f0;--muted:#64748b;--hover:#151e30;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;transition:padding-left .25s ease}
+a{color:var(--accent);text-decoration:none}
+/* SIDEBAR */
+.menu-toggle{position:fixed;top:14px;left:14px;z-index:600;background:rgba(17,24,39,.92);border:1px solid var(--border);color:var(--text);width:42px;height:42px;border-radius:12px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.menu-toggle:hover{border-color:var(--accent)}
+nav{background:rgba(11,15,25,.98);backdrop-filter:blur(12px);border-right:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:6px;position:fixed;top:0;left:0;width:290px;height:100vh;z-index:500;overflow-y:auto;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 30px 60px rgba(0,0,0,.4)}
+body.sidebar-open{padding-left:290px}
+body.sidebar-open nav{transform:translateX(0)}
+.sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.brand{font-weight:800;font-size:14px;padding:10px 10px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.sidebar-close{background:var(--hover);border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:16px;flex-shrink:0}
+.sidebar-close:hover{border-color:var(--accent);color:#fff}
+nav button{background:none;border:1px solid transparent;color:var(--muted);padding:11px 12px;cursor:pointer;font-size:13px;text-align:left;border-radius:10px;transition:.2s;font-weight:500}
+nav button:hover{color:var(--text);background:rgba(255,255,255,.04)}
+nav button.active{color:#fff;border-color:rgba(59,130,246,.45);background:rgba(59,130,246,.14)}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0b0f19 0%,#111827 50%,#0b0f19 100%);border-bottom:1px solid var(--border);padding:52px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -20%,rgba(59,130,246,.12),transparent);pointer-events:none}
+.hero h1{font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.hero p{color:var(--muted);font-size:1.05rem;max-width:620px;margin:0 auto}
+.hero .badges{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.badge{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.badge.g{border-color:var(--green);color:var(--green)}
+.badge.b{border-color:var(--accent);color:var(--accent)}
+.badge.p{border-color:var(--accent2);color:var(--accent2)}
+.badge.o{border-color:var(--orange);color:var(--orange)}
+.badge.c{border-color:var(--cyan);color:var(--cyan)}
+/* TABS */
+.tab{display:none;padding:28px 24px;max-width:1200px;margin:0 auto}
+.tab.active{display:block}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;transition:border-color .2s}
+.card:hover{border-color:rgba(59,130,246,.35)}
+.card h2{font-size:1.1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:.95rem;font-weight:600;margin:14px 0 8px;color:var(--accent)}
+.card h4{font-size:.85rem;font-weight:700;margin:10px 0 6px;color:var(--yellow)}
+.card p,.card li{color:var(--muted);margin-bottom:6px;font-size:.9rem}
+.card ul,.card ol{padding-left:18px}
+.card li{margin-bottom:3px}
+/* GRID */
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+/* CODE */
+pre,code{font-family:'Cascadia Code','Fira Code',Consolas,monospace}
+pre{background:#070b12;border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto;font-size:12.5px;color:#e2e8f0;margin:10px 0;line-height:1.6}
+code{background:rgba(59,130,246,.12);padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--cyan)}
+pre code{background:none;color:#e2e8f0;padding:0}
+.kw{color:#c792ea}.cl{color:#82aaff}.st{color:#c3e88d}.cm{color:#546e7a;font-style:italic}.nu{color:#f78c6c}.an{color:var(--yellow)}
+/* PILLS */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:2px}
+.pill.g{background:#052e16;color:var(--green);border:1px solid var(--green)}
+.pill.b{background:#1e3a5f;color:var(--accent);border:1px solid var(--accent)}
+.pill.r{background:#450a0a;color:var(--red);border:1px solid var(--red)}
+.pill.y{background:#451a03;color:var(--yellow);border:1px solid var(--yellow)}
+.pill.p{background:#2e1065;color:var(--accent2);border:1px solid var(--accent2)}
+.pill.o{background:#431407;color:var(--orange);border:1px solid var(--orange)}
+.pill.c{background:#0c2a3a;color:var(--cyan);border:1px solid var(--cyan)}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:#0f172a;padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);color:var(--accent);font-size:12.5px;font-weight:700}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);font-size:13px}
+tr:hover td{background:var(--hover)}
+/* ALERTS */
+.alert{border-radius:10px;padding:12px 16px;margin:10px 0;font-size:13.5px;border-left:3px solid}
+.alert.info{background:rgba(59,130,246,.08);border-color:var(--accent);color:#93c5fd}
+.alert.warn{background:rgba(245,158,11,.08);border-color:var(--yellow);color:#fcd34d}
+.alert.danger{background:rgba(239,68,68,.08);border-color:var(--red);color:#fca5a5}
+.alert.success{background:rgba(16,185,129,.08);border-color:var(--green);color:#6ee7b7}
+/* MODE BAR */
+.mode-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.mode-btn{background:var(--hover);border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;font-weight:500}
+.mode-btn:hover{color:var(--text)}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* SECTION LABEL */
+.slabel{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;border-left:3px solid var(--accent);padding-left:10px}
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;padding:14px 0}
+.fnode{border:2px solid;border-radius:10px;padding:10px 14px;text-align:center;min-width:85px}
+.ficon{font-size:20px;margin-bottom:2px}
+.ftitle{font-weight:700;font-size:13px}
+.fsub{font-size:10px;color:var(--muted);margin-top:2px}
+.farr{font-size:18px;color:var(--muted)}
+/* QUIZ */
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.qtext{font-size:.95rem;font-weight:600;margin-bottom:14px}
+.qcard .opts label{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;margin-bottom:7px;cursor:pointer;border:1px solid var(--border);transition:.2s;color:var(--muted);font-size:.88rem}
+.qcard .opts label:hover{background:var(--hover);color:var(--text)}
+.qcard .opts input[type=radio]{accent-color:var(--accent)}
+.qcard .opts label.correct{background:rgba(16,185,129,.08);border-color:var(--green);color:var(--green)}
+.qcard .opts label.wrong{background:rgba(239,68,68,.08);border-color:var(--red);color:var(--red)}
+.expl{background:#0f172a;border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:var(--muted);margin-top:12px;display:none}
+.btn{display:inline-block;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:13.5px;font-weight:600;transition:.2s;font-family:inherit}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#2563eb}
+.btn-o{background:none;border:1px solid var(--border);color:var(--muted)}.btn-o:hover{border-color:var(--accent);color:var(--accent)}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{background:#059669}
+/* TP SECTIONS */
+.tp-part{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.tp-head{padding:16px 22px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s;border-bottom:1px solid transparent}
+.tp-head:hover{background:var(--hover)}
+.tp-head.open{border-bottom-color:var(--border)}
+.tp-head h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.tp-num{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.tp-body{padding:22px;display:none}
+.tp-body.open{display:block}
+/* STEP CARDS */
+.step{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start}
+.step-n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;margin-top:2px}
+.step-c{flex:1}
+.step-c strong{font-size:.9rem;display:block;margin-bottom:6px}
+.step-c p,.step-c li{font-size:.83rem;color:var(--muted)}
+/* HOT CARD */
+.hot{background:var(--card);border:1px solid rgba(249,115,22,.4);border-radius:12px;padding:18px;margin-bottom:14px}
+.hot h3{color:var(--orange);margin-bottom:10px;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.freq{background:rgba(249,115,22,.15);color:var(--orange);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+/* EF VISUALIZER */
+#rel-result{margin-top:20px;padding:20px;background:#070b12;border:1px solid var(--border);border-radius:12px;display:none}
+.rel-form .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.rel-form input,.rel-form select{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;font-family:inherit;flex:1;min-width:160px;outline:none;transition:.2s}
+.rel-form input:focus,.rel-form select:focus{border-color:var(--accent)}
+/* ONION DIAGRAM */
+.onion{text-align:center;padding:10px 0}
+.onion-ring{border:2px solid;border-radius:14px;padding:12px 16px;margin-top:8px;text-align:center}
+.onion-label{font-weight:700;font-size:13px;margin-bottom:2px}
+.onion-hint{font-size:11px;color:var(--muted)}
+/* EXAM BOX */
+.ebox{background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(59,130,246,.06));border:1px solid var(--accent2);border-radius:12px;padding:14px;margin-bottom:12px}
+.ebox h4{font-size:.85rem;font-weight:700;color:var(--accent2);margin-bottom:6px}
+.ebox p,.ebox li{font-size:.83rem;color:var(--muted)}
+/* SCORE */
+.score-box{background:var(--card);border:2px solid var(--green);border-radius:14px;padding:24px;text-align:center;margin-bottom:20px}
+.score-box h2{font-size:2rem;color:var(--green);margin-bottom:8px}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero h1{font-size:1.6rem}
+  .tab{padding:14px 12px}
+  .g2,.g3{grid-template-columns:1fr}
+  .flow{flex-direction:column}
+  .farr{transform:rotate(90deg)}
+  body.sidebar-open{padding-left:0}
+  nav{width:min(90vw,290px)}
+  pre{font-size:11px}
+}
+@media(min-width:769px){
+  body.sidebar-open .tab{max-width:1120px}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleSidebar()" aria-label="Ouvrir la navigation">☰</button>
+<nav>
+  <div class="sidebar-head">
+    <span class="brand">ASI .NET</span>
+    <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Fermer la navigation">✕</button>
+  </div>
+  <button onclick="show('home')" class="active" id="tn-home">🏠 Accueil</button>
+  <button onclick="show('ch1')" id="tn-ch1">📘 Ch1 .NET</button>
+  <button onclick="show('ch2')" id="tn-ch2">💜 Ch2 C#</button>
+  <button onclick="show('ch3')" id="tn-ch3">🗄️ Ch3 EF Core</button>
+  <button onclick="show('efviz')" id="tn-efviz">🔗 EF Visualizer</button>
+  <button onclick="show('tp')" id="tn-tp">✈️ TP AirportMgmt</button>
+  <button onclick="show('patterns')" id="tn-patterns">🏛️ Design Patterns</button>
+  <button onclick="show('mvc')" id="tn-mvc">🌐 ASP.NET MVC</button>
+  <button onclick="show('quiz')" id="tn-quiz">❓ Quiz</button>
+  <button onclick="show('hot')" id="tn-hot">🔥 Hot Topics</button>
+  <button onclick="show('exams')" id="tn-exams">📝 Examens</button>
+  <button onclick="show('cases')" id="tn-cases">📚 Cas Pratiques</button>
+  <button onclick="show('revision')" id="tn-revision">🔄 Révision</button>
+  <button onclick="show('appendix')" id="tn-appendix">📎 Appendix</button>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="tab active" id="tab-home">
+<div class="hero">
+  <h1>Architecture des SI I — .NET</h1>
+  <p>Plateforme de révision complète : cours, quiz, examens corrigés, TP Airport Management et fiches récapitulatives.</p>
+  <div class="badges">
+    <span class="badge g">3 Chapitres</span>
+    <span class="badge b">EF Core & LINQ</span>
+    <span class="badge p">Design Patterns</span>
+    <span class="badge o">TP Airport Management</span>
+    <span class="badge c">ASP.NET MVC</span>
+  </div>
+</div>
+<div style="max-width:1200px;margin:32px auto 0;padding:0 24px">
+  <div class="grid g3">
+    <div class="card" style="border-color:var(--accent);cursor:pointer" onclick="show('ch1')">
+      <h2>📘 Ch1 — Introduction .NET</h2>
+      <p>Framework .NET, CLR/JIT/IL, implémentations, architectures N-tiers, MVC, Oignon.</p>
+      <br><span class="pill b">CLR</span><span class="pill b">JIT</span><span class="pill b">Architecture</span>
+    </div>
+    <div class="card" style="border-color:var(--accent2);cursor:pointer" onclick="show('ch2')">
+      <h2>💜 Ch2 — Langage C#</h2>
+      <p>Types, classes, génériques, délégués, LINQ, méthodes d'extension, OOP avancé.</p>
+      <br><span class="pill p">LINQ</span><span class="pill p">Génériques</span><span class="pill p">Délégués</span>
+    </div>
+    <div class="card" style="border-color:var(--green);cursor:pointer" onclick="show('ch3')">
+      <h2>🗄️ Ch3 — EF Core</h2>
+      <p>ORM Entity Framework Core : DbContext, annotations, Fluent API, migrations, TPH/TPT.</p>
+      <br><span class="pill g">EF Core</span><span class="pill g">Migrations</span><span class="pill g">Fluent API</span>
+    </div>
+    <div class="card" style="border-color:var(--orange);cursor:pointer" onclick="show('tp')">
+      <h2>✈️ TP Airport Management</h2>
+      <p>7 parties complètes : OOP, LINQ, EF Core, Design Patterns, Services, MVC. Avec code de correction.</p>
+      <br><span class="pill o">Partie 1→7</span><span class="pill o">Correction</span>
+    </div>
+    <div class="card" style="border-color:var(--cyan);cursor:pointer" onclick="show('efviz')">
+      <h2>🔗 EF Visualizer</h2>
+      <p>Visualiseur interactif des relations Entity Framework Core (1-1, 1-*, *-*).</p>
+      <br><span class="pill c">Interactif</span><span class="pill c">Relations</span>
+    </div>
+    <div class="card" style="border-color:var(--pink);cursor:pointer" onclick="show('mvc')">
+      <h2>🌐 ASP.NET MVC</h2>
+      <p>Contrôleurs, vues Razor, layout, injection de dépendances, vues partielles.</p>
+      <br><span class="pill b">Controllers</span><span class="pill b">Razor</span>
+    </div>
+    <div class="card" style="border-color:var(--yellow);cursor:pointer" onclick="show('exams')">
+      <h2>📝 Examens Corrigés</h2>
+      <p>3 examens complets avec QCM et questions ouvertes corrigées (Véhicules, Clinique, STEG).</p>
+      <br><span class="pill y">Examen 1</span><span class="pill y">Examen 3</span><span class="pill y">Prototype</span>
+    </div>
+    <div class="card" style="border-color:var(--red);cursor:pointer" onclick="show('cases')">
+      <h2>📚 Cas Pratiques</h2>
+      <p>Scénarios complets d'examens : modèles, configurations, LINQ et corrections détaillées.</p>
+      <br><span class="pill r">Véhicules</span><span class="pill r">Clinique</span><span class="pill r">STEG</span>
+    </div>
+    <div class="card" style="border-color:var(--muted);cursor:pointer" onclick="show('revision')">
+      <h2>🔄 Révision Complète</h2>
+      <p>Études de cas complètes des 3 examens avec entités, configurations Fluent API et LINQ.</p>
+      <br><span class="pill b">Foire/Expo</span><span class="pill b">QCM Interactif</span>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <h2>🔥 Ce qui tombe toujours à l'examen</h2>
+    <div class="grid g3">
+      <div><span class="pill o">×3</span> Annotations EF Core ([Key], [Required], [ForeignKey]...)</div>
+      <div><span class="pill o">×3</span> Migrations (Add-Migration, Update-Database, Remove-Migration)</div>
+      <div><span class="pill o">×3</span> Fluent API (HasOne/WithMany/HasForeignKey)</div>
+      <div><span class="pill o">×3</span> Héritage TPH vs TPT</div>
+      <div><span class="pill o">×3</span> Repository + UnitOfWork patterns</div>
+      <div><span class="pill o">×2</span> LINQ (GroupBy, Average, OfType, Take, Skip)</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ CH1 — .NET INTRO ═══════════════ -->
+<div class="tab" id="tab-ch1">
+<div class="slabel">Chapitre 1 — Plateforme .NET</div>
+<div class="card">
+  <h2>📘 PDF Course Import - Missing Sections</h2>
+  <div class="grid g2">
+    <div>
+      <h3>TP Airport Management</h3>
+      <ul>
+        <li>Diagramme de classes, instanciation des objets, surcharge, héritage, interfaces et services.</li>
+        <li>Préparation des données de test, structures itératives, LINQ, méthodes d’extension.</li>
+        <li>Entity Framework Core, migrations, annotations, Fluent API, pré-conventions, lazy loading.</li>
+        <li>ASP.NET MVC, contrôleurs, vues Index/Create, layout, barre de recherche et appels de services.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Cours .NET</h3>
+      <ul>
+        <li>.NET Framework vs .NET Core, architectures N-tiers/N-couches, MVC, architecture oignon.</li>
+        <li>OOP en C#, types, héritage, polymorphisme, encapsulation, génériques, délégués.</li>
+        <li>Collections, LINQ, lambda, DbContext, data annotations, Fluent API, héritage TPH/TPT/TPC.</li>
+        <li>SOLID, Repository, UnitOfWork, service layer et révision d’examen.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🖼️ PDF Figures</h2>
+  <div class="grid g3">
+    <div>
+      <p><strong>Visual Studio project wizard</strong></p>
+      <img src="file:///C:/Users/ASUS/Documents/Codex/2026-05-31/files-mentioned-by-the-user-dotnet/pdf_images/tp_p1_1.png" alt="Visual Studio project wizard" style="width:100%;border-radius:10px;border:1px solid var(--border);margin-top:8px"/>
+    </div>
+    <div>
+      <p><strong>Network / relation diagram</strong></p>
+      <img src="file:///C:/Users/ASUS/Documents/Codex/2026-05-31/files-mentioned-by-the-user-dotnet/pdf_images/cours_.net_p1_1.jpg" alt="Diagram figure" style="width:100%;border-radius:10px;border:1px solid var(--border);margin-top:8px"/>
+    </div>
+    <div>
+      <p><strong>Table figure</strong></p>
+      <img src="file:///C:/Users/ASUS/Documents/Codex/2026-05-31/files-mentioned-by-the-user-dotnet/pdf_images/cours_.net_p10_1.png" alt="Table figure" style="width:100%;border-radius:10px;border:1px solid var(--border);margin-top:8px"/>
+    </div>
+  </div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h2>📌 Qu'est-ce que .NET ?</h2>
+    <p>Plateforme créée par <strong>Microsoft (~2002)</strong> pour développer applications Windows, Web, Mobile, Desktop.</p>
+    <h3>Langages supportés</h3>
+    <span class="pill b">C#</span><span class="pill b">VB.NET</span><span class="pill b">F#</span>
+    <h3>Composants clés</h3>
+    <ul>
+      <li><strong>CLR</strong> — Common Language Runtime (exécution)</li>
+      <li><strong>BCL</strong> — Base Class Library (bibliothèque de base)</li>
+      <li><strong>CLS</strong> — Common Language Specification (spécifications communes)</li>
+      <li><strong>CTS</strong> — Common Type System (système de types)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>⚙️ Chaîne de Compilation</h2>
+    <div class="flow">
+      <div class="fnode" style="border-color:var(--accent);background:rgba(59,130,246,.1)">
+        <div class="ficon">💻</div><div class="ftitle">Code Source</div><div class="fsub">C# / VB.NET</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--accent2);background:rgba(139,92,246,.1)">
+        <div class="ficon">⚙️</div><div class="ftitle">Compilateur</div><div class="fsub">csc.exe</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--orange);background:rgba(249,115,22,.1)">
+        <div class="ficon">📄</div><div class="ftitle">IL / MSIL</div><div class="fsub">Code intermédiaire</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--yellow);background:rgba(245,158,11,.1)">
+        <div class="ficon">🔄</div><div class="ftitle">CLR + JIT</div><div class="fsub">Code natif</div>
+      </div>
+    </div>
+    <div class="alert info">Le <strong>JIT</strong> (Just-In-Time) compile l'IL en code machine au moment de l'exécution, permettant l'optimisation selon la plateforme cible.</div>
+  </div>
+</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🏗️ Architectures logicielles</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Architecture</th><th>Type</th><th>Description</th></tr>
+      <tr><td>N-Couches (Layers)</td><td><span class="pill g">Logique</span></td><td>Séparation en couches fonctionnelles (Présentation / Métier / Données)</td></tr>
+      <tr><td>N-Tiers</td><td><span class="pill o">Physique</span></td><td>Déploiement sur machines séparées</td></tr>
+      <tr><td>MVC</td><td><span class="pill b">Logique</span></td><td>Model-View-Controller, sépare données/affichage/logique</td></tr>
+      <tr><td>Architecture Oignon</td><td><span class="pill p">Logique</span></td><td>Domaine au centre, dépendances vers l'intérieur</td></tr>
+    </table></div>
+    <div class="alert warn">⚠️ Examen : N-couches = <strong>logique</strong> ; N-tiers = <strong>physique</strong></div>
+  </div>
+  <div class="card">
+    <h2>🧅 Architecture Oignon (Projet AM)</h2>
+    <div class="onion">
+      <div class="onion-ring" style="border-color:var(--accent);background:rgba(59,130,246,.07)">
+        <div class="onion-label" style="color:var(--accent)">AM.UI.WEB / AM.UI.Console</div>
+        <div class="onion-hint">Couche Présentation (la plus externe)</div>
+      </div>
+      <div class="onion-ring" style="border-color:var(--orange);background:rgba(249,115,22,.07);margin:0 20px">
+        <div class="onion-label" style="color:var(--orange)">AM.Infrastructure</div>
+        <div class="onion-hint">Repository, EF Core, UnitOfWork</div>
+      </div>
+      <div class="onion-ring" style="border-color:var(--green);background:rgba(16,185,129,.07);margin:0 50px">
+        <div class="onion-label" style="color:var(--green)">AM.ApplicationCore</div>
+        <div class="onion-hint">Services, Interfaces, Domain</div>
+      </div>
+    </div>
+    <div class="alert info">Les dépendances vont toujours de l'extérieur vers l'intérieur. Le domaine ne dépend de rien.</div>
+  </div>
+</div>
+<div class="card">
+  <h2>🔧 Implémentations .NET</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>Implémentation</th><th>Plateforme cible</th><th>Remarques</th></tr>
+    <tr><td>.NET Core (5, 6, 7, 8...)</td><td>Windows, Linux, macOS</td><td>Moderne, cross-platform, open source</td></tr>
+    <tr><td>.NET Framework (1.0–4.8)</td><td>Windows uniquement</td><td>Historique, encore utilisé en entreprise</td></tr>
+    <tr><td>Mono</td><td>Linux, macOS, Android, iOS</td><td>Utilisé par Xamarin/MAUI</td></tr>
+    <tr><td>Xamarin / MAUI</td><td>Mobile (iOS, Android)</td><td>Applications mobiles cross-platform</td></tr>
+  </table></div>
+</div>
+</div>
+
+<!-- ═══════════════ CH2 — C# ═══════════════ -->
+<div class="tab" id="tab-ch2">
+<div class="slabel">Chapitre 2 — Langage C#</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🔷 Types en C#</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>Description</th><th>Héritage</th></tr>
+      <tr><td><code>class</code></td><td>Type référence, stocké en heap</td><td>Simple (un parent)</td></tr>
+      <tr><td><code>struct</code></td><td>Type valeur, stocké en stack</td><td>Aucun</td></tr>
+      <tr><td><code>interface</code></td><td>Contrat pur, sans implémentation</td><td>Multiple</td></tr>
+      <tr><td><code>enum</code></td><td>Constantes nommées entières</td><td>Non applicable</td></tr>
+      <tr><td><code>delegate</code></td><td>Référence vers une méthode</td><td>Non applicable</td></tr>
+    </table></div>
+    <div class="alert danger">❌ C# ne supporte <strong>PAS</strong> les pointeurs en code managé — contrairement au C++.</div>
+  </div>
+  <div class="card">
+    <h2>👁️ Modificateurs de visibilité</h2>
+    <div class="alert danger">⚠️ Sans modificateur → visibilité <strong>internal</strong> par défaut</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Modificateur</th><th>Portée</th></tr>
+      <tr><td><code>public</code></td><td>Partout (tous projets)</td></tr>
+      <tr><td><code>private</code></td><td>Dans la classe uniquement</td></tr>
+      <tr><td><code>protected</code></td><td>Classe + classes dérivées</td></tr>
+      <tr><td><code>internal</code></td><td>Dans le même assembly (défaut)</td></tr>
+      <tr><td><code>protected internal</code></td><td>Assembly OU dérivées</td></tr>
+    </table></div>
+    <pre><code><span class="cm">// Sans modificateur = internal :</span>
+<span class="kw">struct</span> T { }    <span class="cm">// → internal struct T</span>
+<span class="kw">class</span> A { }    <span class="cm">// → internal class A</span></code></pre>
+  </div>
+</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🧬 Types Génériques</h2>
+    <pre><code><span class="cm">// Classe générique</span>
+<span class="kw">public class</span> <span class="cl">GenericBox</span>&lt;T&gt;
+{
+    <span class="kw">public</span> T Value { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// Interface générique avec contrainte</span>
+<span class="kw">public interface</span> <span class="cl">IRepository</span>&lt;TEntity&gt;
+    <span class="kw">where</span> TEntity : <span class="kw">class</span>
+{
+    <span class="kw">void</span> Add(TEntity entity);
+    IEnumerable&lt;TEntity&gt; GetAll();
+}
+
+<span class="cm">// Utilisation</span>
+<span class="kw">var</span> box = <span class="kw">new</span> GenericBox&lt;<span class="kw">int</span>&gt;();
+<span class="kw">var</span> g = <span class="kw">new</span> G&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt;();</code></pre>
+    <div class="alert info">T = <strong>paramètre de type</strong>. La contrainte <code>where T : class</code> restreint aux types référence.</div>
+  </div>
+  <div class="card">
+    <h2>🎯 Délégués — Action &amp; Func</h2>
+    <pre><code><span class="cm">// Délégué personnalisé</span>
+<span class="kw">public delegate void</span> MyDelegate(<span class="kw">int</span> a, <span class="kw">int</span> b);
+
+<span class="cm">// Action = void (pas de retour)</span>
+Action&lt;Plane&gt; FlightDetailsDel = ShowFlightDetails;
+FlightDetailsDel = p => { Console.WriteLine(p); };
+
+<span class="cm">// Func = avec retour (dernier type = retour)</span>
+Func&lt;<span class="kw">string</span>, <span class="kw">double</span>&gt; DurationAvgDel = DurationAverage;
+DurationAvgDel = dest =>
+    Flights.Where(f => f.Destination == dest)
+           .Average(f => f.EstimatedDuration);
+
+<span class="cm">// Func sans paramètre, retourne int :</span>
+Func&lt;<span class="kw">int</span>&gt; countAll = CountAll;</code></pre>
+    <div class="alert warn">Examen : <code>Action</code> = jamais de retour | <code>Func</code> = dernier paramètre = type retour</div>
+  </div>
+</div>
+<div class="slabel">OOP — Héritage &amp; Polymorphisme</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🎭 Polymorphisme par Signature (Surcharge)</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">Passenger</span>
+{
+    <span class="cm">// Surcharge 1 : 2 paramètres</span>
+    <span class="kw">public bool</span> CheckProfile(<span class="kw">string</span> firstName, <span class="kw">string</span> lastName)
+        => FirstName == firstName &amp;&amp; LastName == lastName;
+
+    <span class="cm">// Surcharge 2 : 3 paramètres</span>
+    <span class="kw">public bool</span> CheckProfile(<span class="kw">string</span> firstName,
+        <span class="kw">string</span> lastName, <span class="kw">string</span> email)
+        => FirstName == firstName &amp;&amp; LastName == lastName
+           &amp;&amp; EmailAddress == email;
+
+    <span class="cm">// Surcharge 3 : paramètre optionnel (remplace les 2)</span>
+    <span class="kw">public bool</span> CheckProfile(<span class="kw">string</span> firstName,
+        <span class="kw">string</span> lastName, <span class="kw">string</span> email = <span class="kw">null</span>)
+    {
+        <span class="kw">if</span> (email != <span class="kw">null</span>)
+            <span class="kw">return</span> FirstName==firstName &amp;&amp; LastName==lastName
+                   &amp;&amp; EmailAddress==email;
+        <span class="kw">return</span> FirstName==firstName &amp;&amp; LastName==lastName;
+    }
+}</code></pre>
+  </div>
+  <div class="card">
+    <h2>🎭 Polymorphisme d'Héritage (override)</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">Passenger</span>
+{
+    <span class="kw">public virtual void</span> PassengerType()
+        => Console.WriteLine(<span class="st">"I am a Passenger"</span>);
+}
+
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span>
+{
+    <span class="kw">public override void</span> PassengerType()
+    {
+        <span class="kw">base</span>.PassengerType(); <span class="cm">// appel méthode mère</span>
+        Console.WriteLine(<span class="st">"and I'm a staff member"</span>);
+    }
+}
+
+<span class="kw">public class</span> <span class="cl">Traveller</span> : <span class="cl">Passenger</span>
+{
+    <span class="kw">public override void</span> PassengerType()
+    {
+        <span class="kw">base</span>.PassengerType();
+        Console.WriteLine(<span class="st">"and I'm a traveller"</span>);
+    }
+}</code></pre>
+    <div class="alert info"><code>virtual</code> + <code>override</code> = comportement déterminé à l'exécution selon le type réel.</div>
+  </div>
+</div>
+<div class="slabel">LINQ — Language Integrated Query</div>
+<div class="card">
+  <h2>🔍 LINQ — Syntaxes et Méthodes clés</h2>
+  <div class="grid g2">
+    <div>
+      <h3>Syntaxe Requête (SQL-like)</h3>
+      <pre><code><span class="kw">var</span> vols = <span class="kw">from</span> f <span class="kw">in</span> Flights
+           <span class="kw">where</span> f.Destination == <span class="st">"Paris"</span>
+           <span class="kw">orderby</span> f.FlightDate
+           <span class="kw">select</span> f;
+
+<span class="cm">// Trier en ordre décroissant</span>
+<span class="kw">var</span> inv = <span class="kw">from</span> e <span class="kw">in</span> t <span class="kw">orderby</span> -e <span class="kw">select</span> e;</code></pre>
+    </div>
+    <div>
+      <h3>Syntaxe Lambda (méthodes chaînées)</h3>
+      <pre><code><span class="kw">var</span> vols = Flights
+    .Where(f => f.Destination == <span class="st">"Paris"</span>)
+    .OrderBy(f => f.FlightDate)
+    .ToList();
+
+<span class="cm">// Moyenne des durées > 100</span>
+<span class="kw">var</span> moy = Flights
+    .Where(f => f.EstimatedDuration > <span class="nu">100</span>)
+    .Average(f => f.EstimatedDuration);</code></pre>
+    </div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:14px"><table>
+    <tr><th>Méthode</th><th>Usage</th><th>Exemple</th></tr>
+    <tr><td><code>.Where(pred)</code></td><td>Filtrer</td><td><code>.Where(f => f.Dest == "Paris")</code></td></tr>
+    <tr><td><code>.Select(proj)</code></td><td>Transformer/projeter</td><td><code>.Select(f => f.FlightDate)</code></td></tr>
+    <tr><td><code>.OrderBy/.OrderByDescending</code></td><td>Trier</td><td><code>.OrderByDescending(f => f.Date)</code></td></tr>
+    <tr><td><code>.Average()</code></td><td>Moyenne</td><td><code>.Average(f => f.Duration)</code></td></tr>
+    <tr><td><code>.GroupBy(key)</code></td><td>Grouper</td><td><code>.GroupBy(f => f.Destination)</code></td></tr>
+    <tr><td><code>.Take(n) / .Skip(n)</code></td><td>Limiter</td><td><code>.Take(3)</code> → 3 premiers</td></tr>
+    <tr><td><code>.OfType&lt;T&gt;()</code></td><td>Filtrer par type</td><td><code>.OfType&lt;Traveller&gt;()</code></td></tr>
+    <tr><td><code>.Count()</code></td><td>Compter</td><td><code>.Count()</code></td></tr>
+    <tr><td><code>.FirstOrDefault()</code></td><td>Premier ou null</td><td><code>.FirstOrDefault()</code></td></tr>
+    <tr><td><code>.ToList()</code></td><td>Matérialiser</td><td><code>.ToList()</code></td></tr>
+  </table></div>
+  <div class="alert warn">⚠️ <strong>Exécution différée :</strong> écrire la requête LINQ ne récupère pas les données. Il faut l'exécuter avec <code>.ToList()</code>, <code>foreach</code>, <code>.Count()</code>, etc.</div>
+</div>
+<div class="card">
+  <h2>🔗 Méthodes d'Extension</h2>
+  <p>Ajoutent des fonctionnalités à un type existant sans modifier son code. Méthode <code>static</code> dans classe <code>static</code>, premier param <code>this TypeCible</code>.</p>
+  <pre><code><span class="kw">public static class</span> <span class="cl">PassengerExtension</span>
+{
+    <span class="cm">// Extension sur Passenger : met en majuscule prénom + nom</span>
+    <span class="kw">public static void</span> UpperFullName(<span class="kw">this</span> <span class="cl">Passenger</span> p)
+    {
+        p.FirstName = p.FirstName[<span class="nu">0</span>].ToString().ToUpper()
+                    + p.FirstName.Substring(<span class="nu">1</span>);
+        p.LastName = p.LastName[<span class="nu">0</span>].ToString().ToUpper()
+                   + p.LastName.Substring(<span class="nu">1</span>);
+    }
+}
+
+<span class="cm">// Extension sur IEnumerable&lt;int&gt; :</span>
+<span class="kw">public static int</span> CountPairs(<span class="kw">this</span> IEnumerable&lt;<span class="kw">int</span>&gt; source)
+    => source.Count(x => x % <span class="nu">2</span> == <span class="nu">0</span>);</code></pre>
+</div>
+</div>
+
+<!-- ═══════════════ CH3 — EF CORE ═══════════════ -->
+<div class="tab" id="tab-ch3">
+<div class="slabel">Chapitre 3 — Entity Framework Core</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🗄️ DbContext — Classe principale</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
+{
+    <span class="cm">// DbSet = table en base de données</span>
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Flight</span>&gt; Flights { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Plane</span>&gt; Planes { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Passenger</span>&gt; Passengers { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">protected override void</span> OnConfiguring(
+        DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseLazyLoadingProxies()
+            .UseSqlServer(<span class="st">@"Data Source=(localdb)\mssqllocaldb;
+              Initial Catalog=AirportManagementDB;
+              Integrated Security=true"</span>);
+        <span class="kw">base</span>.OnConfiguring(optionsBuilder);
+    }
+
+    <span class="kw">protected override void</span> OnModelCreating(
+        ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(
+            <span class="kw">new</span> <span class="cl">PlaneConfiguration</span>());
+        modelBuilder.ApplyConfiguration(
+            <span class="kw">new</span> <span class="cl">FlightConfiguration</span>());
+    }
+}</code></pre>
+  </div>
+  <div class="card">
+    <h2>📦 NuGet Packages requis</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Package</th><th>Projet cible</th><th>Rôle</th></tr>
+      <tr><td><code>EF Core</code></td><td>AM.Infrastructure</td><td>ORM de base</td></tr>
+      <tr><td><code>EF Core.SqlServer</code></td><td>AM.Infrastructure</td><td>Fournisseur SQL Server</td></tr>
+      <tr><td><code>EF Core.Proxies</code></td><td>AM.Infrastructure</td><td>Lazy Loading</td></tr>
+      <tr><td><code>EF Core.Tools</code></td><td>AM.Infrastructure</td><td>Commandes migration PM</td></tr>
+      <tr><td><code>EF Core.Design</code></td><td>AM.UI.Console/WEB</td><td>Design-time tools</td></tr>
+    </table></div>
+    <h3>Commandes Migration</h3>
+    <pre><code><span class="cm"># Ajouter une migration</span>
+Add-Migration MigrationName
+
+<span class="cm"># Mettre à jour la BDD</span>
+Update-Database
+
+<span class="cm"># Revenir à une migration précédente</span>
+Update-Database Mig2   <span class="cm"># annule Mig3</span>
+
+<span class="cm"># Supprimer la dernière migration (non appliquée)</span>
+Remove-Migration</code></pre>
+    <div class="alert danger">Pour migrations : cibler <strong>AM.Infrastructure</strong> comme projet par défaut dans la console PM.</div>
+  </div>
+</div>
+<div class="slabel">Annotations de données</div>
+<div class="card">
+  <h2>🏷️ Annotations EF Core</h2>
+  <div class="grid g2">
+    <div>
+      <h3>Classe Passenger</h3>
+      <pre><code><span class="kw">public class</span> <span class="cl">Passenger</span>
+{
+    <span class="an">[Key]</span>
+    <span class="an">[StringLength(7)]</span>
+    <span class="kw">public string</span> PassportNumber { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[MinLength(3, ErrorMessage="Min 3 chars")]</span>
+    <span class="an">[MaxLength(25, ErrorMessage="Max 25 chars")]</span>
+    <span class="kw">public string</span> FirstName { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[Display(Name="Date of Birth")]</span>
+    <span class="an">[DataType(DataType.Date)]</span>
+    <span class="kw">public</span> DateTime BirthDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[EmailAddress]</span>
+    <span class="kw">public string</span> EmailAddress { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[Phone]</span>
+    <span class="an">[StringLength(8)]</span>
+    <span class="kw">public string</span> TelNumber { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span>
+{
+    <span class="an">[DataType(DataType.Currency)]</span>
+    <span class="kw">public float</span> Salary { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+    </div>
+    <div>
+      <h3>Classe Plane &amp; Flight</h3>
+      <pre><code><span class="kw">public class</span> <span class="cl">Plane</span>
+{
+    <span class="an">[Range(1, int.MaxValue,</span>
+    <span class="an">  ErrorMessage="Doit être positif")]</span>
+    <span class="kw">public int</span> Capacity { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Flight</span>
+{
+    <span class="kw">public int</span> FlightId { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[ForeignKey("Plane")]</span>
+    <span class="kw">public int</span> PlaneId { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public virtual</span> <span class="cl">Plane</span> Plane { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> IList&lt;<span class="cl">Passenger</span>&gt; Passengers
+        { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+      <h3>Tableau des Annotations</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>Annotation</th><th>Usage</th></tr>
+        <tr><td><code>[Key]</code></td><td>Clé primaire</td></tr>
+        <tr><td><code>[Required]</code></td><td>Champ obligatoire (NOT NULL)</td></tr>
+        <tr><td><code>[StringLength(n)]</code></td><td>Longueur max chaîne</td></tr>
+        <tr><td><code>[MaxLength] / [MinLength]</code></td><td>Longueur min/max</td></tr>
+        <tr><td><code>[ForeignKey("X")]</code></td><td>Clé étrangère</td></tr>
+        <tr><td><code>[Table("X")]</code></td><td>Nom de table personnalisé</td></tr>
+        <tr><td><code>[EmailAddress]</code></td><td>Format e-mail valide</td></tr>
+        <tr><td><code>[Range(min, max)]</code></td><td>Plage de valeurs</td></tr>
+        <tr><td><code>[DataType(DataType.Currency)]</code></td><td>Type de données affichage</td></tr>
+        <tr><td><code>[Display(Name="X")]</code></td><td>Libellé affiché</td></tr>
+      </table></div>
+    </div>
+  </div>
+</div>
+<div class="slabel">Fluent API</div>
+<div class="card">
+  <h2>⚙️ Fluent API — Configurations</h2>
+  <div class="grid g2">
+    <div>
+      <h3>PlaneConfiguration</h3>
+      <pre><code><span class="kw">public class</span> <span class="cl">PlaneConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Plane</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Plane</span>&gt; builder)
+    {
+        builder.HasKey(p => p.PlaneId);
+        builder.ToTable(<span class="st">"MyPlanes"</span>);
+        builder.Property(p => p.Capacity)
+               .HasColumnName(<span class="st">"PlaneCapacity"</span>);
+    }
+}
+
+<span class="kw">public class</span> <span class="cl">PassengerConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Passenger</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Passenger</span>&gt; builder)
+    {
+        builder.OwnsOne(p => p.FullName, fn =>
+        {
+            fn.Property(f => f.FirstName)
+              .HasMaxLength(<span class="nu">30</span>)
+              .HasColumnName(<span class="st">"PassFirstName"</span>);
+            fn.Property(f => f.LastName)
+              .IsRequired()
+              .HasColumnName(<span class="st">"PassLastName"</span>);
+        });
+    }
+}</code></pre>
+    </div>
+    <div>
+      <h3>FlightConfiguration (Relations)</h3>
+      <pre><code><span class="kw">public class</span> <span class="cl">FlightConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Flight</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Flight</span>&gt; builder)
+    {
+        <span class="cm">// One-to-Many : Plane → Flights</span>
+        builder.HasOne(f => f.Plane)
+               .WithMany(p => p.Flights)
+               .HasForeignKey(f => f.PlaneId);
+
+        <span class="cm">// Many-to-Many : Flight ↔ Passenger</span>
+        builder.HasMany(f => f.Passengers)
+               .WithMany(p => p.Flights)
+               .UsingEntity&lt;<span class="cl">Ticket</span>&gt;(
+                   j => j.HasOne(t => t.Passenger)
+                          .WithMany(p => p.Tickets)
+                          .HasForeignKey(t => t.PassengerId),
+                   j => j.HasOne(t => t.Flight)
+                          .WithMany(f => f.Tickets)
+                          .HasForeignKey(t => t.FlightId)
+               );
+    }
+}</code></pre>
+      <h3>Pré-Conventions (DateTime → "date")</h3>
+      <pre><code><span class="kw">protected override void</span> ConfigureConventions(
+    ModelConfigurationBuilder config)
+{
+    config.Properties&lt;DateTime&gt;()
+          .HaveColumnType(<span class="st">"date"</span>);
+}</code></pre>
+    </div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:12px"><table>
+    <tr><th>Méthode Fluent API</th><th>Usage</th></tr>
+    <tr><td><code>HasKey()</code></td><td>Clé primaire</td></tr>
+    <tr><td><code>ToTable("X")</code></td><td>Nom de table</td></tr>
+    <tr><td><code>HasColumnName("X")</code></td><td>Nom de colonne</td></tr>
+    <tr><td><code>HasColumnType("date")</code></td><td>Type SQL colonne</td></tr>
+    <tr><td><code>HasMaxLength(n)</code></td><td>Longueur max</td></tr>
+    <tr><td><code>IsRequired()</code></td><td>NOT NULL</td></tr>
+    <tr><td><code>HasOne().WithMany()</code></td><td>Relation 1-*</td></tr>
+    <tr><td><code>HasMany().WithMany()</code></td><td>Relation *-*</td></tr>
+    <tr><td><code>HasForeignKey()</code></td><td>Clé étrangère</td></tr>
+    <tr><td><code>HasDiscriminator()</code></td><td>Colonne discriminante (TPH)</td></tr>
+    <tr><td><code>OwnsOne()</code></td><td>Type d'entité détenu (Owned)</td></tr>
+    <tr><td><code>OnDelete(DeleteBehavior.Cascade)</code></td><td>Comportement suppression</td></tr>
+  </table></div>
+</div>
+<div class="slabel">Stratégies d'héritage</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🌳 TPH — Table Per Hierarchy (1 table)</h2>
+    <p>Stratégie <strong>par défaut</strong> dans EF Core. Une seule table avec colonne discriminante.</p>
+    <pre><code><span class="cm">// Dans OnModelCreating :</span>
+modelBuilder.Entity&lt;<span class="cl">Passenger</span>&gt;()
+    .HasDiscriminator&lt;<span class="kw">int</span>&gt;(<span class="st">"IsTraveller"</span>)
+    .HasValue&lt;<span class="cl">Passenger</span>&gt;(<span class="nu">0</span>)   <span class="cm">// 0 = Passenger</span>
+    .HasValue&lt;<span class="cl">Traveller</span>&gt;(<span class="nu">1</span>)  <span class="cm">// 1 = Traveller</span>
+    .HasValue&lt;<span class="cl">Staff</span>&gt;(<span class="nu">2</span>);     <span class="cm">// 2 = Staff</span></code></pre>
+    <div class="alert success">✅ IsTraveller = 0 → Passenger | 1 → Traveller | 2 → Staff</div>
+    <div class="alert info">Avantage : simplicité, performances. Inconvénient : colonnes NULL pour les sous-classes.</div>
+  </div>
+  <div class="card">
+    <h2>🌳 TPT — Table Per Type (N tables)</h2>
+    <p>Une table par classe dans la hiérarchie. Les propriétés héritées restent dans la table mère.</p>
+    <pre><code><span class="cm">// Via annotations :</span>
+<span class="an">[Table("Travellers")]</span>
+<span class="kw">public class</span> <span class="cl">Traveller</span> : <span class="cl">Passenger</span> { }
+
+<span class="an">[Table("Staffs")]</span>
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span> { }
+
+<span class="cm">// OU via Fluent API :</span>
+modelBuilder.Entity&lt;<span class="cl">Traveller</span>&gt;().ToTable(<span class="st">"Travellers"</span>);
+modelBuilder.Entity&lt;<span class="cl">Staff</span>&gt;().ToTable(<span class="st">"Staffs"</span>);</code></pre>
+    <div class="alert warn">Examen : pour TPT via annotations → <code>[Table]</code> sur les <strong>classes filles</strong>.</div>
+  </div>
+</div>
+<div class="slabel">Chargement des données</div>
+<div class="grid g3">
+  <div class="card">
+    <h2>😴 Lazy Loading</h2>
+    <ul>
+      <li>Données chargées automatiquement au premier accès</li>
+      <li>Toutes nav properties → <code>virtual</code></li>
+      <li>Installer <code>EF Core.Proxies</code></li>
+    </ul>
+    <pre><code>optionsBuilder
+  .UseLazyLoadingProxies()
+  .UseSqlServer(connStr);
+
+<span class="cm">// Propriétés nav = virtual !</span>
+<span class="kw">public virtual</span> <span class="cl">Plane</span> Plane { <span class="kw">get</span>;<span class="kw">set</span>; }
+<span class="kw">public virtual</span> IList&lt;<span class="cl">Passenger</span>&gt; Passengers
+    { <span class="kw">get</span>;<span class="kw">set</span>; }</code></pre>
+  </div>
+  <div class="card">
+    <h2>🏃 Eager Loading</h2>
+    <ul>
+      <li>Données chargées dès la requête initiale</li>
+      <li>Utiliser <code>.Include()</code></li>
+    </ul>
+    <pre><code><span class="kw">var</span> flights = ctx.Flights
+    .Include(f => f.Plane)
+    .Include(f => f.Passengers)
+    .ToList();</code></pre>
+    <div class="alert info">Préféré quand on sait à l'avance quelles données sont nécessaires.</div>
+  </div>
+  <div class="card">
+    <h2>🎯 Explicit Loading</h2>
+    <ul>
+      <li>Chargement manuel avec <code>.Load()</code></li>
+      <li>Lazy loading désactivé</li>
+    </ul>
+    <pre><code>ctx.Entry(flight)
+    .Reference(f => f.Plane)
+    .Load();
+
+ctx.Entry(flight)
+    .Collection(f => f.Passengers)
+    .Load();</code></pre>
+    <div class="alert danger">Sans Lazy ni Include → <code>NullReferenceException</code> sur nav properties.</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ EF VISUALIZER ═══════════════ -->
+<div class="tab" id="tab-efviz">
+<div class="card">
+  <h2>🔗 Entity Framework Core — Relationship Visualizer</h2>
+  <p style="color:var(--muted);margin-bottom:18px">Entrez deux noms d'entités et sélectionnez le type de relation pour générer le code EF Core suggéré.</p>
+  <div class="rel-form">
+    <div class="row">
+      <input type="text" id="e1" placeholder="Entité 1 (ex: User)" />
+      <select id="rtype">
+        <option value="">— Sélectionner la relation —</option>
+        <option value="1-1">1 → 1 (One-to-One)</option>
+        <option value="1-n">1 → * (One-to-Many)</option>
+        <option value="n-1">* → 1 (Many-to-One)</option>
+        <option value="n-n">* → * (Many-to-Many)</option>
+      </select>
+      <input type="text" id="e2" placeholder="Entité 2 (ex: Profile)" />
+    </div>
+    <button class="btn btn-p" onclick="visualize()">Visualiser le Code</button>
+  </div>
+  <div id="rel-result">
+    <h4 style="color:var(--green);margin-bottom:12px">✅ Configuration EF Core suggérée :</h4>
+    <pre id="rel-code"></pre>
+    <div id="rel-fluent" style="margin-top:12px"></div>
+  </div>
+</div>
+<div class="card">
+  <h2>📋 Récapitulatif des Relations EF Core</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>Type</th><th>Côté "1"</th><th>Côté "*"</th><th>Clé étrangère</th></tr>
+    <tr><td><span class="pill g">1-to-1</span></td><td>Navigation vers B</td><td>Navigation vers A</td><td>Dans l'une des deux tables</td></tr>
+    <tr><td><span class="pill b">1-to-Many</span></td><td><code>IList&lt;B&gt; Bs</code></td><td><code>A A</code> + <code>AId</code></td><td>Dans table B (FK vers A)</td></tr>
+    <tr><td><span class="pill p">Many-to-Many</span></td><td><code>IList&lt;B&gt; Bs</code></td><td><code>IList&lt;A&gt; As</code></td><td>Table de jonction (Ticket)</td></tr>
+  </table></div>
+</div>
+</div>
+
+<!-- ═══════════════ TP AIRPORT MANAGEMENT ═══════════════ -->
+<div class="tab" id="tab-tp">
+<div class="hero" style="padding:32px 24px;margin-bottom:24px;border-radius:14px;border:1px solid var(--border)">
+  <h1 style="font-size:1.8rem">✈️ TP Airport Management</h1>
+  <p>Projet complet en 7 parties : OOP, LINQ, EF Core, Annotations, Patterns, Services Génériques, ASP.NET MVC</p>
+  <div class="badges" style="margin-top:12px">
+    <span class="badge o">7 Parties</span>
+    <span class="badge g">Code Correction</span>
+    <span class="badge b">C# .NET 6/8</span>
+  </div>
+</div>
+
+<!-- Modèle de données -->
+<div class="card" style="border-color:var(--cyan)">
+  <h2 style="color:var(--cyan)">📐 Modèle de Données — Diagramme de Classes</h2>
+  <div class="grid g2">
+    <div>
+      <h3>Entités principales</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>Entité</th><th>Propriétés clés</th></tr>
+        <tr><td><strong>Plane</strong></td><td>PlaneId, PlaneType (enum), Capacity, ManufactureDate</td></tr>
+        <tr><td><strong>Flight</strong></td><td>FlightId, FlightDate, Destination, Departure, EffectiveArrival, EstimatedDuration, PlaneId, Pilot</td></tr>
+        <tr><td><strong>Passenger</strong></td><td>PassportNumber, FirstName, LastName, BirthDate, EmailAddress, TelNumber</td></tr>
+        <tr><td><strong>Traveller</strong></td><td>hérite Passenger + HealthInformation, Nationality</td></tr>
+        <tr><td><strong>Staff</strong></td><td>hérite Passenger + Function, EmployementDate, Salary</td></tr>
+        <tr><td><strong>Ticket</strong></td><td>Table porteuse : Prix, Siege, VIP, FlightId, PassengerId</td></tr>
+      </table></div>
+    </div>
+    <div>
+      <h3>Relations</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>De</th><th>Vers</th><th>Type</th></tr>
+        <tr><td>Plane</td><td>Flight</td><td><span class="pill b">1 → *</span></td></tr>
+        <tr><td>Flight</td><td>Passenger</td><td><span class="pill p">* → *</span> (via Ticket)</td></tr>
+        <tr><td>Passenger</td><td>Traveller/Staff</td><td><span class="pill g">Héritage</span></td></tr>
+      </table></div>
+      <pre><code><span class="kw">public enum</span> PlaneType { Boing, Airbus }
+
+<span class="kw">public class</span> <span class="cl">Plane</span>
+{
+    <span class="kw">public int</span> PlaneId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> PlaneType PlaneType { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> Capacity { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DateTime ManufactureDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> List&lt;<span class="cl">Flight</span>&gt; Flights { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 1 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">1</div>Partie 1 — Les Principes de l'Orienté Objet</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div>
+        <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Créer la solution AirportManagement</strong><p>AM.UI.Console (.NET 8.0) + AM.ApplicationCore (.NET 8.0). Console référence ApplicationCore.</p></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Créer le dossier Domain dans AM.ApplicationCore</strong><p>Y implémenter toutes les classes du diagramme de classes.</p></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Représenter l'héritage</strong><p>Passenger (classe mère) → Staff et Traveller (classes filles).</p></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Implémenter propriétés et accesseurs</strong><p>Auto-properties { get; set; } pour tous les attributs.</p></div></div>
+        <div class="step"><div class="step-n">5</div><div class="step-c"><strong>Propriétés de navigation (relations)</strong><p>ICollection&lt;Flight&gt; dans Plane, Plane dans Flight, List&lt;Passenger&gt; dans Flight.</p></div></div>
+        <div class="step"><div class="step-n">6</div><div class="step-c"><strong>Réimplémenter ToString() dans toutes les classes</strong></div></div>
+      </div>
+      <div>
+        <pre><code><span class="kw">public class</span> <span class="cl">Flight</span>
+{
+    <span class="kw">public int</span> FlightId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DateTime FlightDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> EstimatedDuration { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DateTime EffectiveArrival { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Departure { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Destination { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> List&lt;<span class="cl">Passenger</span>&gt; Passengers
+        { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Plane</span> Plane { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Traveller</span> : <span class="cl">Passenger</span>
+{
+    <span class="kw">public string</span> HealthInformation { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Nationality { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span>
+{
+    <span class="kw">public string</span> Function { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DateTime EmployementDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public float</span> Salary { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+      </div>
+    </div>
+    <div class="slabel" style="margin-top:16px">Instanciation des objets</div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Méthodes d'instanciation</h3>
+        <pre><code><span class="cm">// 1) Constructeur non paramétré + propriétés</span>
+<span class="cl">Plane</span> p = <span class="kw">new</span> <span class="cl">Plane</span>();
+p.PlaneType = PlaneType.Airbus;
+p.Capacity = <span class="nu">200</span>;
+
+<span class="cm">// 2) Constructeur paramétré</span>
+<span class="cl">Plane</span> p2 = <span class="kw">new</span> <span class="cl">Plane</span>(PlaneType.Boing, <span class="nu">300</span>, DateTime.Now);
+
+<span class="cm">// 3) Initialiseurs d'objet (recommandé)</span>
+<span class="cl">Plane</span> p3 = <span class="kw">new</span> <span class="cl">Plane</span>
+{
+    PlaneType = PlaneType.Airbus,
+    Capacity = <span class="nu">150</span>,
+    ManufactureDate = <span class="kw">new</span> DateTime(<span class="nu">2015</span>, <span class="nu">02</span>, <span class="nu">03</span>)
+};</code></pre>
+        <div class="alert success">✅ Les initialiseurs d'objet sont plus simples et n'exigent pas de respecter une signature de constructeur.</div>
+      </div>
+      <div class="card">
+        <h3>Polymorphisme (résumé)</h3>
+        <pre><code><span class="cm">// Polymorphisme par signature (surcharge)</span>
+<span class="kw">public bool</span> CheckProfile(<span class="kw">string</span> fn, <span class="kw">string</span> ln) {...}
+<span class="kw">public bool</span> CheckProfile(<span class="kw">string</span> fn, <span class="kw">string</span> ln, <span class="kw">string</span> email) {...}
+
+<span class="cm">// Polymorphisme par héritage</span>
+<span class="kw">Passenger</span>[] arr = {
+    <span class="kw">new</span> <span class="cl">Passenger</span>(),
+    <span class="kw">new</span> <span class="cl">Staff</span>(),
+    <span class="kw">new</span> <span class="cl">Traveller</span>()
+};
+<span class="kw">foreach</span>(<span class="kw">var</span> p <span class="kw">in</span> arr)
+    p.PassengerType(); <span class="cm">// résout selon type réel</span>
+
+<span class="cm">// Affiche :</span>
+<span class="cm">// "I am a Passenger"</span>
+<span class="cm">// "I am a Passenger and I'm a staff member"</span>
+<span class="cm">// "I am a Passenger and I'm a traveller"</span></code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 2 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">2</div>Partie 2 — Interrogation des données (LINQ)</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div class="card">
+        <h3>Données de test (TestData)</h3>
+        <pre><code><span class="kw">public static class</span> <span class="cl">TestData</span>
+{
+    <span class="kw">public static</span> <span class="cl">Plane</span> BoingPlane = <span class="kw">new</span> <span class="cl">Plane</span>
+        { PlaneType=PlaneType.Boing, Capacity=<span class="nu">150</span>,
+          ManufactureDate=<span class="kw">new</span> DateTime(<span class="nu">2015</span>,<span class="nu">02</span>,<span class="nu">03</span>) };
+    <span class="kw">public static</span> <span class="cl">Plane</span> Airbusplane = <span class="kw">new</span> <span class="cl">Plane</span>
+        { PlaneType=PlaneType.Airbus, Capacity=<span class="nu">250</span>,
+          ManufactureDate=<span class="kw">new</span> DateTime(<span class="nu">2020</span>,<span class="nu">11</span>,<span class="nu">11</span>) };
+
+    <span class="kw">public static</span> <span class="cl">Staff</span> captain = <span class="kw">new</span> <span class="cl">Staff</span>
+        { FirstName=<span class="st">"captain"</span>, LastName=<span class="st">"captain"</span>,
+          Salary=<span class="nu">99999</span>, EmployementDate=<span class="kw">new</span> DateTime(<span class="nu">1999</span>,<span class="nu">1</span>,<span class="nu">1</span>) };
+
+    <span class="kw">public static</span> <span class="cl">Flight</span> flight1 = <span class="kw">new</span> <span class="cl">Flight</span>
+        { FlightDate=<span class="kw">new</span> DateTime(<span class="nu">2022</span>,<span class="nu">1</span>,<span class="nu">1</span>,<span class="nu">15</span>,<span class="nu">10</span>,<span class="nu">10</span>),
+          Destination=<span class="st">"Paris"</span>, EstimatedDuration=<span class="nu">110</span>,
+          Plane=Airbusplane,
+          Passengers=<span class="kw">new</span> List&lt;<span class="cl">Passenger</span>&gt; { captain, ... } };
+
+    <span class="kw">public static</span> List&lt;<span class="cl">Flight</span>&gt; listFlights =
+        <span class="kw">new</span> List&lt;<span class="cl">Flight</span>&gt; { flight1, flight2, flight3,
+                             flight4, flight5, flight6 };
+}</code></pre>
+      </div>
+      <div class="card">
+        <h3>Méthodes LINQ demandées</h3>
+        <pre><code><span class="cm">// 1. Dates de vol par destination</span>
+<span class="kw">public</span> List&lt;DateTime&gt; GetFlightDates(<span class="kw">string</span> dest)
+    => (<span class="kw">from</span> f <span class="kw">in</span> Flights
+        <span class="kw">where</span> f.Destination == dest
+        <span class="kw">select</span> f.FlightDate).ToList();
+
+<span class="cm">// 2. Dates et destinations pour un avion</span>
+<span class="kw">public void</span> ShowFlightDetails(<span class="cl">Plane</span> plane)
+{
+    <span class="kw">var</span> req = Flights
+        .Where(f => f.Plane == plane)
+        .Select(f => <span class="kw">new</span> { f.FlightDate, f.Destination });
+    <span class="kw">foreach</span>(<span class="kw">var</span> v <span class="kw">in</span> req)
+        Console.WriteLine(v.FlightDate + " - " + v.Destination);
+}
+
+<span class="cm">// 3. Nombre de vols sur 7 jours</span>
+<span class="kw">public int</span> ProgrammedFlightNumber(DateTime startDate)
+    => Flights.Where(f => f.FlightDate > startDate
+        &amp;&amp; (f.FlightDate - startDate).TotalDays &lt; <span class="nu">7</span>).Count();
+
+<span class="cm">// 4. Moyenne durées pour une destination</span>
+<span class="kw">public double</span> DurationAverage(<span class="kw">string</span> dest)
+    => Flights.Where(f => f.Destination == dest)
+              .Average(f => f.EstimatedDuration);
+
+<span class="cm">// 5. Vols ordonnés du plus long au plus court</span>
+<span class="kw">public</span> IEnumerable&lt;<span class="cl">Flight</span>&gt; OrderedDurationFlights()
+    => Flights.OrderByDescending(f => f.EstimatedDuration);
+
+<span class="cm">// 6. Nationalités des 3 voyageurs les plus âgés</span>
+<span class="kw">public</span> IEnumerable&lt;<span class="kw">string</span>&gt; SeniorTravellers(<span class="cl">Flight</span> f)
+    => f.Passengers.OfType&lt;<span class="cl">Traveller</span>&gt;()
+           .OrderBy(p => p.BirthDate)
+           .Take(<span class="nu">3</span>)
+           .Select(p => p.Nationality);
+
+<span class="cm">// 7. Vols groupés par destination</span>
+<span class="kw">public</span> IEnumerable&lt;IGrouping&lt;<span class="kw">string</span>, <span class="cl">Flight</span>&gt;&gt;
+    DestinationGroupedFlights()
+{
+    <span class="kw">var</span> req = Flights.GroupBy(f => f.Destination);
+    <span class="kw">foreach</span>(<span class="kw">var</span> g <span class="kw">in</span> req)
+    {
+        Console.WriteLine(<span class="st">"Destination: "</span> + g.Key);
+        <span class="kw">foreach</span>(<span class="kw">var</span> flight <span class="kw">in</span> g)
+            Console.WriteLine(<span class="st">"  Décollage: "</span> + flight.FlightDate);
+    }
+    <span class="kw">return</span> req;
+}</code></pre>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Délégués — Affectation et Lambdas</h3>
+      <pre><code><span class="cm">// Déclaration dans ServiceFlight</span>
+<span class="kw">public</span> Action&lt;<span class="cl">Plane</span>&gt; FlightDetailsDel;
+<span class="kw">public</span> Func&lt;<span class="kw">string</span>, <span class="kw">double</span>&gt; DurationAverageDel;
+
+<span class="cm">// Constructeur : affectation directe...</span>
+<span class="kw">public</span> <span class="cl">ServiceFlight</span>()
+{
+    FlightDetailsDel = ShowFlightDetails;
+    DurationAverageDel = DurationAverage;
+}
+
+<span class="cm">// ...OU via expressions Lambda (même résultat)</span>
+FlightDetailsDel = p => {
+    Flights.Where(f => f.Plane == p)
+           .Select(f => <span class="kw">new</span> { f.FlightDate, f.Destination })
+           .ToList()
+           .ForEach(v => Console.WriteLine(v));
+};
+DurationAverageDel = dest =>
+    Flights.Where(f => f.Destination == dest)
+           .Average(f => f.EstimatedDuration);</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 3 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">3</div>Partie 3 — Entity Framework Core (Mise en place)</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div>
+        <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Créer AM.Infrastructure (Bibliothèque de classes .NET 6.0)</strong></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Références :</strong><p>Console → Infrastructure → ApplicationCore</p></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Installer NuGet :</strong> EF Core, EF Core.SqlServer dans AM.Infrastructure</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Créer AMContext</strong> dans AM.Infrastructure héritant DbContext</div></div>
+        <div class="step"><div class="step-n">5</div><div class="step-c"><strong>Migrations :</strong> installer EF Core.Tools (Infrastructure) + Design (Console)</div></div>
+        <div class="step"><div class="step-n">6</div><div class="step-c"><strong>Add-Migration + Update-Database</strong> depuis Console PM ciblant Infrastructure</div></div>
+      </div>
+      <div class="card">
+        <h3>AMContext</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
+{
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Flight</span>&gt; Flights { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Plane</span>&gt; Planes { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DbSet&lt;<span class="cl">Passenger</span>&gt; Passengers { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">protected override void</span> OnConfiguring(
+        DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(
+          <span class="st">@"Data Source=(localdb)\mssqllocaldb;
+            Initial Catalog=AirportManagementDB;
+            Integrated Security=true"</span>);
+        <span class="kw">base</span>.OnConfiguring(optionsBuilder);
+    }
+}
+
+<span class="cm">// Ajouter une propriété = add-migration + update</span>
+<span class="kw">public string</span> Airline { <span class="kw">get</span>; <span class="kw">set</span>; }</code></pre>
+        <div class="alert info">Si Passenger n'a pas de clé → erreur migration. Ajouter <code>public int Id { get; set; }</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 4 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">4</div>Partie 4 — EF Core : Annotations &amp; Fluent API</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="alert info">Les annotations et les configurations Fluent API peuvent <strong>cohabiter</strong> dans un même projet.</div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Annotations complètes</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">Passenger</span>
+{
+    <span class="an">[Key]</span>
+    <span class="an">[StringLength(7)]</span>
+    <span class="kw">public string</span> PassportNumber { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[MinLength(3, ErrorMessage="Min 3 car.")]</span>
+    <span class="an">[MaxLength(25, ErrorMessage="Max 25 car.")]</span>
+    <span class="kw">public string</span> FirstName { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[Display(Name="Date of Birth")]</span>
+    <span class="an">[DataType(DataType.Date)]</span>
+    <span class="kw">public</span> DateTime BirthDate { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[EmailAddress]</span>
+    <span class="kw">public string</span> EmailAddress { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="an">[Phone][StringLength(8)]</span>
+    <span class="kw">public string</span> TelNumber { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+<span class="kw">public class</span> <span class="cl">Plane</span>
+{
+    <span class="an">[Range(1, int.MaxValue)]</span>
+    <span class="kw">public int</span> Capacity { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+<span class="kw">public class</span> <span class="cl">Flight</span>
+{
+    <span class="an">[ForeignKey("Plane")]</span>
+    <span class="kw">public int</span> PlaneId { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span>
+{
+    <span class="an">[DataType(DataType.Currency)]</span>
+    <span class="kw">public float</span> Salary { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+      </div>
+      <div>
+        <div class="card">
+          <h3>PlaneConfiguration (Fluent API)</h3>
+          <pre><code><span class="kw">public class</span> <span class="cl">PlaneConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Plane</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Plane</span>&gt; builder)
+    {
+        builder.HasKey(p => p.PlaneId);
+        builder.ToTable(<span class="st">"MyPlanes"</span>);
+        builder.Property(p => p.Capacity)
+               .HasColumnName(<span class="st">"PlaneCapacity"</span>);
+    }
+}</code></pre>
+        </div>
+        <div class="card">
+          <h3>Pré-Conventions + Owned Types</h3>
+          <pre><code><span class="cm">// AMContext — ConfigureConventions</span>
+<span class="kw">protected override void</span> ConfigureConventions(
+    ModelConfigurationBuilder config)
+{
+    <span class="cm">// Toutes les DateTime → "date" en SQL</span>
+    config.Properties&lt;DateTime&gt;()
+          .HaveColumnType(<span class="st">"date"</span>);
+}
+
+<span class="cm">// Classe détenue (Owned type)</span>
+<span class="kw">public class</span> <span class="cl">FullName</span>
+{
+    <span class="kw">public string</span> FirstName { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> LastName { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+<span class="cm">// Passenger utilise FullName :</span>
+<span class="kw">public</span> <span class="cl">FullName</span> FullName { <span class="kw">get</span>; <span class="kw">set</span>; }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 5 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">5</div>Partie 5 — EF Core : Héritage &amp; Chargement Lazy</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div class="card">
+        <h3>TPH — Une seule table Passengers</h3>
+        <pre><code><span class="cm">// Dans OnModelCreating :</span>
+modelBuilder.Entity&lt;<span class="cl">Passenger</span>&gt;()
+    .HasDiscriminator&lt;<span class="kw">int</span>&gt;(<span class="st">"IsTraveller"</span>)
+    .HasValue&lt;<span class="cl">Passenger</span>&gt;(<span class="nu">0</span>)
+    .HasValue&lt;<span class="cl">Traveller</span>&gt;(<span class="nu">1</span>)
+    .HasValue&lt;<span class="cl">Staff</span>&gt;(<span class="nu">2</span>);</code></pre>
+        <div class="alert success">Colonne discriminante "IsTraveller" : 0=Passenger, 1=Traveller, 2=Staff</div>
+        <h3>TPT — 3 tables séparées</h3>
+        <pre><code><span class="an">[Table("Travellers")]</span>
+<span class="kw">public class</span> <span class="cl">Traveller</span> : <span class="cl">Passenger</span> { ... }
+
+<span class="an">[Table("Staffs")]</span>
+<span class="kw">public class</span> <span class="cl">Staff</span> : <span class="cl">Passenger</span> { ... }
+
+<span class="cm">// OU Fluent :</span>
+modelBuilder.Entity&lt;<span class="cl">Traveller</span>&gt;().ToTable(<span class="st">"Travellers"</span>);
+modelBuilder.Entity&lt;<span class="cl">Staff</span>&gt;().ToTable(<span class="st">"Staffs"</span>);</code></pre>
+      </div>
+      <div class="card">
+        <h3>Table porteuse — Classe Ticket</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">Ticket</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public float</span> Prix { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Siege { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public bool</span> VIP { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> FlightId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Flight</span> Flight { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> PassengerId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Passenger</span> Passenger { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// Dans Flight :</span>
+<span class="kw">public virtual</span> IList&lt;<span class="cl">Ticket</span>&gt; Tickets { <span class="kw">get</span>; <span class="kw">set</span>; }
+<span class="cm">// Dans Passenger :</span>
+<span class="kw">public virtual</span> IList&lt;<span class="cl">Ticket</span>&gt; Tickets { <span class="kw">get</span>; <span class="kw">set</span>; }</code></pre>
+        <h3>Activer Lazy Loading</h3>
+        <pre><code><span class="cm">// 1. Installer EF Core.Proxies</span>
+<span class="cm">// 2. OnConfiguring :</span>
+optionsBuilder
+    .UseLazyLoadingProxies()
+    .UseSqlServer(connectionString);
+
+<span class="cm">// 3. Toutes nav properties = virtual !</span>
+<span class="kw">public virtual</span> <span class="cl">Plane</span> Plane { <span class="kw">get</span>; <span class="kw">set</span>; }
+<span class="kw">public virtual</span> IList&lt;<span class="cl">Passenger</span>&gt; Passengers
+    { <span class="kw">get</span>; <span class="kw">set</span>; }</code></pre>
+        <div class="alert danger">Sans <code>virtual</code> + Proxies → NullReferenceException lors de l'accès aux nav properties sans ajout de données.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 6 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">6</div>Partie 6 — Design Patterns : Repository &amp; UnitOfWork</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div class="card">
+        <h3>🏗️ IGenericRepository</h3>
+        <pre><code><span class="kw">namespace</span> AM.ApplicationCore.Interfaces
+{
+    <span class="kw">public interface</span> <span class="cl">IGenericRepository</span>&lt;TEntity&gt;
+        <span class="kw">where</span> TEntity : <span class="kw">class</span>
+    {
+        <span class="kw">void</span> Add(TEntity entity);
+        <span class="kw">void</span> Update(TEntity entity);
+        <span class="kw">void</span> Delete(TEntity entity);
+        <span class="kw">void</span> Delete(Expression&lt;Func&lt;TEntity, <span class="kw">bool</span>&gt;&gt; where);
+        TEntity GetById(<span class="kw">params object</span>[] keyValues);
+        TEntity Get(Expression&lt;Func&lt;TEntity, <span class="kw">bool</span>&gt;&gt; where);
+        IEnumerable&lt;TEntity&gt; GetAll();
+        IEnumerable&lt;TEntity&gt; GetMany(
+            Expression&lt;Func&lt;TEntity, <span class="kw">bool</span>&gt;&gt; where = <span class="kw">null</span>);
+    }
+}</code></pre>
+      </div>
+      <div class="card">
+        <h3>🏗️ GenericRepository (AM.Infrastructure)</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">GenericRepository</span>&lt;T&gt;
+    : <span class="cl">IGenericRepository</span>&lt;T&gt; <span class="kw">where</span> T : <span class="kw">class</span>
+{
+    <span class="kw">private readonly</span> DbContext _context;
+    <span class="kw">private readonly</span> DbSet&lt;T&gt; _dbSet;
+
+    <span class="kw">public</span> <span class="cl">GenericRepository</span>(DbContext context)
+    {
+        _context = context;
+        _dbSet = context.Set&lt;T&gt;();
+    }
+    <span class="kw">public void</span> Add(T entity) => _dbSet.Add(entity);
+    <span class="kw">public void</span> Delete(T entity) => _dbSet.Remove(entity);
+    <span class="kw">public void</span> Update(T entity) => _dbSet.Update(entity);
+    <span class="kw">public</span> IEnumerable&lt;T&gt; GetAll() => _dbSet.AsEnumerable();
+    <span class="kw">public</span> T GetById(<span class="kw">params object</span>[] keys) => _dbSet.Find(keys);
+    <span class="kw">public</span> IEnumerable&lt;T&gt; GetMany(
+        Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; where)
+        => _dbSet.Where(where).AsEnumerable();
+    <span class="kw">public void</span> Delete(Expression&lt;Func&lt;T,<span class="kw">bool</span>&gt;&gt; where)
+        => _dbSet.RemoveRange(_dbSet.Where(where));
+}</code></pre>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:0">
+      <div class="card">
+        <h3>🔄 IUnitOfWork + UnitOfWork</h3>
+        <pre><code><span class="cm">// Interface (AM.ApplicationCore.Interfaces)</span>
+<span class="kw">public interface</span> <span class="cl">IUnitOfWork</span> : IDisposable
+{
+    <span class="kw">int</span> Save();
+    <span class="cl">IGenericRepository</span>&lt;TEntity&gt;
+        Repository&lt;TEntity&gt;() <span class="kw">where</span> TEntity : <span class="kw">class</span>;
+}
+
+<span class="cm">// Implémentation (AM.Infrastructure)</span>
+<span class="kw">public class</span> <span class="cl">UnitOfWork</span> : <span class="cl">IUnitOfWork</span>
+{
+    <span class="kw">private readonly</span> DbContext _context;
+    <span class="kw">private readonly</span> Type _repositoryType;
+    <span class="kw">private bool</span> disposedValue;
+
+    <span class="kw">public</span> <span class="cl">UnitOfWork</span>(DbContext ctx, Type repoType)
+    {
+        _context = ctx; _repositoryType = repoType;
+    }
+    <span class="kw">public</span> <span class="cl">IGenericRepository</span>&lt;T&gt;
+        Repository&lt;T&gt;() <span class="kw">where</span> T : <span class="kw">class</span>
+    => (IGenericRepository&lt;T&gt;)Activator.CreateInstance(
+        _repositoryType.MakeGenericType(<span class="kw">typeof</span>(T)), _context);
+
+    <span class="kw">public int</span> Save() => _context.SaveChanges();
+
+    <span class="kw">protected virtual void</span> Dispose(<span class="kw">bool</span> disposing)
+    {
+        <span class="kw">if</span> (!disposedValue) {
+            <span class="kw">if</span> (disposing) _context.Dispose();
+            disposedValue = <span class="kw">true</span>;
+        }
+    }
+    <span class="kw">public void</span> Dispose()
+    {
+        Dispose(<span class="kw">true</span>);
+        GC.SuppressFinalize(<span class="kw">this</span>);
+    }
+}</code></pre>
+        <div class="alert warn">⚠️ Le GC ne libère pas DbContext (ressource non managée). Implémenter <strong>IDisposable</strong> pour la libération déterministe.</div>
+      </div>
+      <div class="card">
+        <h3>🤔 Pourquoi ces patterns ?</h3>
+        <div class="step"><div class="step-n">❓</div><div class="step-c"><strong>Problème sans UnitOfWork</strong><p>Impossible d'utiliser DbContext directement dans AM.ApplicationCore → pas de persistance.</p></div></div>
+        <div class="step"><div class="step-n">✅</div><div class="step-c"><strong>Repository</strong><p>Abstraction de l'accès aux données. Une interface générique, une implémentation réutilisable.</p></div></div>
+        <div class="step"><div class="step-n">✅</div><div class="step-c"><strong>UnitOfWork</strong><p>Centralise les SaveChanges(). Coordonne plusieurs repositories dans une seule transaction.</p></div></div>
+        <div class="step"><div class="step-n">✅</div><div class="step-c"><strong>IDisposable</strong><p>Libère le DbContext proprement quand il n'est plus utilisé.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 7 -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num">7</div>Partie 7 — Services Génériques &amp; Spécifiques</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="grid g2">
+      <div class="card">
+        <h3>IService&lt;T&gt; — Interface générique</h3>
+        <pre><code><span class="kw">namespace</span> AM.ApplicationCore.Interfaces
+{
+    <span class="kw">public interface</span> <span class="cl">IService</span>&lt;T&gt; <span class="kw">where</span> T : <span class="kw">class</span>
+    {
+        <span class="kw">void</span> Add(T entity);
+        <span class="kw">void</span> Update(T entity);
+        <span class="kw">void</span> Delete(T entity);
+        <span class="kw">void</span> Delete(Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; where);
+        T GetById(<span class="kw">object</span> id);
+        T GetById(<span class="kw">string</span> id);
+        IEnumerable&lt;T&gt; GetAll();
+        IEnumerable&lt;T&gt; GetMany(
+            Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; where = <span class="kw">null</span>);
+        T Get(Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; where);
+        <span class="kw">void</span> Commit();
+    }
+}</code></pre>
+      </div>
+      <div class="card">
+        <h3>Service&lt;T&gt; — Classe générique</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">Service</span>&lt;T&gt; : <span class="cl">IService</span>&lt;T&gt;
+    <span class="kw">where</span> T : <span class="kw">class</span>
+{
+    <span class="kw">private readonly</span> <span class="cl">IGenericRepository</span>&lt;T&gt; _repository;
+    <span class="kw">private readonly</span> <span class="cl">IUnitOfWork</span> _unitOfWork;
+
+    <span class="kw">public</span> <span class="cl">Service</span>(<span class="cl">IUnitOfWork</span> unitOfWork)
+    {
+        _repository = unitOfWork.Repository&lt;T&gt;();
+        _unitOfWork = unitOfWork;
+    }
+    <span class="kw">public virtual void</span> Add(T e) => _repository.Add(e);
+    <span class="kw">public virtual</span> IEnumerable&lt;T&gt; GetAll()
+        => _repository.GetAll();
+    <span class="kw">public virtual</span> IEnumerable&lt;T&gt; GetMany(
+        Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; filter = <span class="kw">null</span>)
+        => _repository.GetMany(filter);
+    <span class="kw">public virtual</span> T Get(Expression&lt;Func&lt;T, <span class="kw">bool</span>&gt;&gt; where)
+        => _repository.Get(where);
+    <span class="kw">public void</span> Commit()
+    {
+        <span class="kw">try</span> { _unitOfWork.Save(); }
+        <span class="kw">catch</span> (Exception) { <span class="kw">throw</span>; }
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:0">
+      <div class="card">
+        <h3>Services spécifiques</h3>
+        <pre><code><span class="cm">// IServiceFlight (hérite IService&lt;Flight&gt;)</span>
+<span class="kw">public interface</span> <span class="cl">IServiceFlight</span>
+    : <span class="cl">IService</span>&lt;<span class="cl">Flight</span>&gt; { }
+
+<span class="cm">// IServicePlane (hérite IService&lt;Plane&gt; + méthodes)</span>
+<span class="kw">public interface</span> <span class="cl">IServicePlane</span>
+    : <span class="cl">IService</span>&lt;<span class="cl">Plane</span>&gt;
+{
+    IList&lt;<span class="cl">Passenger</span>&gt; GetPassengers(<span class="cl">Plane</span> plane);
+    IList&lt;IGrouping&lt;<span class="kw">int</span>, <span class="cl">Flight</span>&gt;&gt; GetFlights(<span class="kw">int</span> n);
+    <span class="kw">bool</span> AvailablePlane(<span class="cl">Flight</span> f, <span class="kw">int</span> n);
+    <span class="kw">void</span> DeletePlanes();
+}
+
+<span class="cm">// ServiceFlight</span>
+<span class="kw">public class</span> <span class="cl">ServiceFlight</span>
+    : <span class="cl">Service</span>&lt;<span class="cl">Flight</span>&gt;, <span class="cl">IServiceFlight</span>
+{
+    <span class="kw">public</span> <span class="cl">ServiceFlight</span>(<span class="cl">IUnitOfWork</span> uow) : <span class="kw">base</span>(uow) { }
+
+    <span class="kw">public</span> IEnumerable&lt;<span class="cl">Flight</span>&gt; SortFlights()
+        => GetAll().OrderByDescending(f => f.FlightDate);
+}</code></pre>
+      </div>
+      <div class="card">
+        <h3>ServicePlane — méthodes avancées</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">ServicePlane</span>
+    : <span class="cl">Service</span>&lt;<span class="cl">Plane</span>&gt;, <span class="cl">IServicePlane</span>
+{
+    <span class="kw">public</span> <span class="cl">ServicePlane</span>(<span class="cl">IUnitOfWork</span> uow) : <span class="kw">base</span>(uow) { }
+
+    <span class="cm">// Vérifier disponibilité places</span>
+    <span class="kw">public bool</span> AvailablePlane(<span class="cl">Flight</span> f, <span class="kw">int</span> n)
+    {
+        <span class="kw">int</span> cap = Get(p => p.Flights.Contains(f)).Capacity;
+        <span class="kw">int</span> nbPass = f.Tickets.Count();
+        <span class="kw">return</span> cap >= (nbPass + n);
+    }
+
+    <span class="cm">// Supprimer avions > 10 ans</span>
+    <span class="kw">public void</span> DeletePlanes()
+    {
+        <span class="kw">foreach</span>(<span class="kw">var</span> p <span class="kw">in</span> GetMany().Where(p =>
+            (DateTime.Now - p.ManufactureDate).TotalDays > <span class="nu">365</span>*<span class="nu">10</span>))
+        {
+            Delete(p); Commit();
+        }
+    }
+
+    <span class="cm">// Vols des n derniers avions</span>
+    <span class="kw">public</span> IList&lt;IGrouping&lt;<span class="kw">int</span>, <span class="cl">Flight</span>&gt;&gt;
+        GetFlights(<span class="kw">int</span> n) =>
+        GetAll().OrderByDescending(p => p.PlaneId)
+                .Take(n)
+                .SelectMany(p => p.Flights)
+                .GroupBy(f => f.Plane.PlaneId)
+                .ToList();
+
+    <span class="cm">// Passagers d'un avion</span>
+    <span class="kw">public</span> IList&lt;<span class="cl">Passenger</span>&gt; GetPassengers(<span class="cl">Plane</span> plane)
+        => GetById(plane.PlaneId).Flights
+               .SelectMany(f => f.Tickets
+                   .Select(t => t.Passenger)).ToList();
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTIE 7b - MVC -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num" style="background:linear-gradient(135deg,var(--cyan),var(--green))">7b</div>Partie 7b — ASP.NET MVC (AM.UI.WEB)</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="alert info">Projet de type <strong>Application web ASP.NET MVC (6.0)</strong>. NuGet : EF Core + SqlServer + Proxies. Définir comme projet de démarrage.</div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>FlightController avec injection</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">FlightController</span> : Controller
+{
+    <span class="kw">private readonly</span> <span class="cl">IServiceFlight</span> _flightService;
+    <span class="kw">private readonly</span> <span class="cl">IServicePlane</span> _planeService;
+
+    <span class="kw">public</span> <span class="cl">FlightController</span>(
+        <span class="cl">IServiceFlight</span> flightService,
+        <span class="cl">IServicePlane</span> planeService)
+    {
+        _flightService = flightService;
+        _planeService = planeService;
+    }
+
+    <span class="cm">// GET: Index avec filtre date</span>
+    <span class="kw">public</span> ActionResult Index(DateTime? dateDepart)
+    {
+        <span class="kw">if</span>(dateDepart == <span class="kw">null</span>)
+            <span class="kw">return</span> View(_flightService.GetAll().ToList());
+        <span class="kw">return</span> View(_flightService
+            .GetMany(f => f.FlightDate.Date
+                .Equals(dateDepart)).ToList());
+    }
+
+    <span class="cm">// Tri des vols</span>
+    <span class="kw">public</span> ActionResult Sort()
+        => View(<span class="st">"Index"</span>, _flightService.SortFlights());
+
+    <span class="cm">// GET: Create</span>
+    <span class="kw">public</span> ActionResult Create()
+    {
+        ViewBag.Planes = <span class="kw">new</span> SelectList(
+            _planeService.GetAll().ToList(),
+            <span class="st">"PlaneId"</span>, <span class="st">"Information"</span>);
+        <span class="kw">return</span> View();
+    }
+
+    <span class="cm">// POST: Create avec image upload</span>
+    [HttpPost][ValidateAntiForgeryToken]
+    <span class="kw">public</span> ActionResult Create(
+        <span class="cl">Flight</span> flight, IFormFile PilotImage)
+    {
+        <span class="kw">try</span> {
+            <span class="kw">if</span> (PilotImage != <span class="kw">null</span>) {
+                <span class="kw">var</span> path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    <span class="st">"wwwroot"</span>, <span class="st">"uploads"</span>,
+                    PilotImage.FileName);
+                <span class="kw">using var</span> stream = <span class="kw">new</span> FileStream(
+                    path, FileMode.Create);
+                PilotImage.CopyTo(stream);
+                flight.Pilot = PilotImage.FileName;
+            }
+            _flightService.Add(flight);
+            _flightService.Commit();
+            <span class="kw">return</span> RedirectToAction(<span class="kw">nameof</span>(Index));
+        } <span class="kw">catch</span> { <span class="kw">return</span> View(); }
+    }
+}</code></pre>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Injection dans Program.cs</h3>
+          <pre><code><span class="kw">var</span> builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+
+<span class="cm">// Injection de dépendances</span>
+builder.Services.AddDbContext&lt;<span class="cl">AMContext</span>&gt;();
+builder.Services.AddScoped&lt;<span class="cl">IUnitOfWork</span>, <span class="cl">UnitOfWork</span>&gt;();
+builder.Services.AddScoped&lt;<span class="cl">IServiceFlight</span>, <span class="cl">ServiceFlight</span>&gt;();
+builder.Services.AddScoped&lt;<span class="cl">IServicePlane</span>, <span class="cl">ServicePlane</span>&gt;();
+builder.Services.AddSingleton(
+    <span class="kw">typeof</span>(IGenericRepository&lt;&gt;));
+
+<span class="kw">var</span> app = builder.Build();</code></pre>
+        </div>
+        <div class="card">
+          <h3>Vue Index avec barre de recherche</h3>
+          <pre><code><span class="cm">&lt;!-- Recherche par date --&gt;</span>
+&lt;form asp-action="index"&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Recherche&lt;/legend&gt;
+    Date : &lt;input type="date" name="dateDepart" /&gt;
+    &lt;input type="submit" value="Rechercher" /&gt;
+  &lt;/fieldset&gt;
+&lt;/form&gt;
+
+<span class="cm">&lt;!-- Bouton tri --&gt;</span>
+&lt;form asp-action="Sort"&gt;
+  &lt;input type="submit" value="Trier par date" /&gt;
+&lt;/form&gt;
+
+<span class="cm">&lt;!-- Image du pilote dans la liste --&gt;</span>
+&lt;img src="~/uploads/@item.Pilot"
+     width="50" height="50" /&gt;
+
+<span class="cm">&lt;!-- Lien vers détails avion --&gt;</span>
+@Html.ActionLink("Plane", "Details", "Plane",
+    new { id=item.PlaneId })</code></pre>
+        </div>
+        <div class="card">
+          <h3>Vue Partielle _FlightDetails</h3>
+          <pre><code><span class="cm">&lt;!-- _FlightDetails.cshtml --&gt;</span>
+@model AM.ApplicationCore.Domain.Flight
+&lt;div&gt;
+  &lt;dl class="row"&gt;
+    &lt;dt&gt;Nombre de passagers&lt;/dt&gt;
+    &lt;dd&gt;@Model.Tickets.Count()&lt;/dd&gt;
+    &lt;dt&gt;Type Avion&lt;/dt&gt;
+    &lt;dd&gt;@Model.Plane.PlaneType&lt;/dd&gt;
+    &lt;dt&gt;Capacité Avion&lt;/dt&gt;
+    &lt;dd&gt;@Model.Plane.Capacity&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/div&gt;
+
+<span class="cm">&lt;!-- Dans Index.cshtml (2ème ligne) --&gt;</span>
+&lt;tr&gt;
+  &lt;td colspan="5"&gt;
+    &lt;partial name="_FlightDetails"
+             model="item" /&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- end tab-tp -->
+
+<!-- ═══════════════ DESIGN PATTERNS ═══════════════ -->
+<div class="tab" id="tab-patterns">
+<div class="slabel">Design Patterns .NET — Repository, UnitOfWork, Service</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>📦 Pattern Repository</h2>
+    <p>Abstraction de l'accès aux données. Sépare la logique métier de l'infrastructure.</p>
+    <div class="flow" style="padding:10px 0">
+      <div class="fnode" style="border-color:var(--accent2);background:rgba(139,92,246,.1)"><div class="ftitle">Service</div><div class="fsub">ApplicationCore</div></div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--accent);background:rgba(59,130,246,.1)"><div class="ftitle">IRepository</div><div class="fsub">Interface</div></div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--green);background:rgba(16,185,129,.1)"><div class="ftitle">Repository</div><div class="fsub">Infrastructure</div></div>
+      <div class="farr">→</div>
+      <div class="fnode" style="border-color:var(--orange);background:rgba(249,115,22,.1)"><div class="ftitle">DbContext</div><div class="fsub">SQL Server</div></div>
+    </div>
+    <div class="alert info">Le Service ne connaît que l'interface (IGenericRepository). L'implémentation peut être changée sans modifier le Service.</div>
+  </div>
+  <div class="card">
+    <h2>🔄 Pattern UnitOfWork</h2>
+    <p>Coordonne les opérations sur plusieurs repositories dans une seule transaction atomique.</p>
+    <pre><code><span class="cm">// Avant : services utilisaient directement IGenericRepository</span>
+<span class="cm">// Problème : pas de SaveChanges (pas de persistance)</span>
+
+<span class="cm">// Après : services utilisent IUnitOfWork</span>
+<span class="kw">public class</span> <span class="cl">ServiceFlight</span>
+    : <span class="cl">Service</span>&lt;<span class="cl">Flight</span>&gt;, <span class="cl">IServiceFlight</span>
+{
+    <span class="kw">public</span> <span class="cl">ServiceFlight</span>(<span class="cl">IUnitOfWork</span> uow)
+        : <span class="kw">base</span>(uow) { }
+}
+
+<span class="cm">// Sequence typique :</span>
+_flightService.Add(flight);    <span class="cm">// ajout en mémoire</span>
+_flightService.Commit();       <span class="cm">// SaveChanges → BDD</span></code></pre>
+  </div>
+</div>
+<div class="card">
+  <h2>📊 Couche Service Générique — Architecture complète</h2>
+  <div class="grid g3">
+    <div>
+      <h3>AM.ApplicationCore</h3>
+      <ul>
+        <li>📁 Domain (Plane, Flight, Passenger...)</li>
+        <li>📁 Interfaces (IService&lt;T&gt;, IGenericRepository&lt;T&gt;, IUnitOfWork, IServiceFlight, IServicePlane)</li>
+        <li>📁 Services (Service&lt;T&gt;, ServiceFlight, ServicePlane)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>AM.Infrastructure</h3>
+      <ul>
+        <li>📁 Configurations (PlaneConfig, FlightConfig, PassengerConfig)</li>
+        <li>🗄️ AMContext (DbContext)</li>
+        <li>📦 GenericRepository&lt;T&gt;</li>
+        <li>🔄 UnitOfWork</li>
+      </ul>
+    </div>
+    <div>
+      <h3>AM.UI.WEB / Console</h3>
+      <ul>
+        <li>📁 Controllers (FlightController, PlaneController)</li>
+        <li>📁 Views (Index, Create, Details, Delete, Edit)</li>
+        <li>⚙️ Program.cs (IoC Container)</li>
+      </ul>
+      <div class="alert warn">AM.UI référence AM.Infrastructure. AM.Infrastructure référence AM.ApplicationCore.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ ASP.NET MVC ═══════════════ -->
+<div class="tab" id="tab-mvc">
+<div class="slabel">ASP.NET MVC — Architecture &amp; Patterns</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🌐 Architecture MVC</h2>
+    <div class="flow">
+      <div class="fnode" style="border-color:var(--accent);background:rgba(59,130,246,.1)">
+        <div class="ficon">🌍</div><div class="ftitle">Model</div><div class="fsub">Données + logique</div>
+      </div>
+      <div class="farr">↔</div>
+      <div class="fnode" style="border-color:var(--green);background:rgba(16,185,129,.1)">
+        <div class="ficon">🎮</div><div class="ftitle">Controller</div><div class="fsub">Reçoit requêtes HTTP</div>
+      </div>
+      <div class="farr">↔</div>
+      <div class="fnode" style="border-color:var(--accent2);background:rgba(139,92,246,.1)">
+        <div class="ficon">🖥️</div><div class="ftitle">View</div><div class="fsub">Razor (.cshtml)</div>
+      </div>
+    </div>
+    <div class="alert info">Le Controller traite la requête, interagit avec le Model (Services), et retourne une View avec les données.</div>
+  </div>
+  <div class="card">
+    <h2>🎯 Actions HTTP</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Action</th><th>Décorateur</th><th>Usage</th></tr>
+      <tr><td>GET Index</td><td>(aucun)</td><td>Liste des éléments</td></tr>
+      <tr><td>GET Create</td><td>(aucun)</td><td>Afficher formulaire</td></tr>
+      <tr><td>POST Create</td><td><code>[HttpPost]</code></td><td>Soumettre formulaire</td></tr>
+      <tr><td>GET Edit/{id}</td><td>(aucun)</td><td>Charger pour édition</td></tr>
+      <tr><td>POST Edit</td><td><code>[HttpPost]</code></td><td>Sauvegarder modification</td></tr>
+      <tr><td>GET Delete/{id}</td><td>(aucun)</td><td>Confirmation suppression</td></tr>
+      <tr><td>POST Delete</td><td><code>[HttpPost]</code></td><td>Confirmer suppression</td></tr>
+    </table></div>
+    <div class="alert warn"><code>[ValidateAntiForgeryToken]</code> doit accompagner tous les POST pour éviter les attaques CSRF.</div>
+  </div>
+</div>
+<div class="card">
+  <h2>🔑 Razor View — Fonctionnalités clés</h2>
+  <div class="grid g2">
+    <pre><code><span class="cm">&lt;!-- Tag Helpers ASP.NET Core --&gt;</span>
+&lt;form asp-action="Create"&gt;
+&lt;input asp-for="Destination" class="form-control" /&gt;
+&lt;span asp-validation-for="Destination"&gt;&lt;/span&gt;
+&lt;select asp-for="PlaneId"
+        asp-items="ViewBag.Planes"&gt;&lt;/select&gt;
+
+<span class="cm">&lt;!-- Layout partagé (_Layout.cshtml) --&gt;</span>
+&lt;a asp-controller="Flight"
+   asp-action="Index"&gt;Vols&lt;/a&gt;
+
+<span class="cm">&lt;!-- Vue partielle --&gt;</span>
+&lt;partial name="_FlightDetails"
+         model="item" /&gt;
+
+<span class="cm">&lt;!-- Helper HTML classique --&gt;</span>
+@Html.ActionLink("Details","Details","Plane",
+    new { id=item.PlaneId })</code></pre>
+    <pre><code><span class="cm">// ViewBag pour passer données supplémentaires</span>
+<span class="kw">public</span> ActionResult Create()
+{
+    ViewBag.Planes = <span class="kw">new</span> SelectList(
+        _planeService.GetAll(),
+        <span class="st">"PlaneId"</span>,
+        <span class="st">"Information"</span>  <span class="cm">// propriété affichée</span>
+    );
+    <span class="kw">return</span> View();
+}
+
+<span class="cm">// Upload d'image (IFormFile)</span>
+<span class="kw">public</span> ActionResult Create(
+    <span class="cl">Flight</span> flight, IFormFile PilotImage)
+{
+    <span class="kw">var</span> path = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        <span class="st">"wwwroot/uploads"</span>,
+        PilotImage.FileName);
+    <span class="kw">using var</span> s = <span class="kw">new</span> FileStream(path, FileMode.Create);
+    PilotImage.CopyTo(s);
+    flight.Pilot = PilotImage.FileName;
+    _flightService.Add(flight);
+    _flightService.Commit();
+    <span class="kw">return</span> RedirectToAction(<span class="kw">nameof</span>(Index));
+}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div class="tab" id="tab-quiz">
+<div id="qwrap"></div>
+<div style="text-align:center;margin-top:16px">
+  <button class="btn btn-p" onclick="submitQuiz()">Valider mes réponses</button>
+  <button class="btn btn-o" style="margin-left:10px" onclick="resetQuiz()">Recommencer</button>
+</div>
+</div>
+
+<!-- ═══════════════ HOT TOPICS ═══════════════ -->
+<div class="tab" id="tab-hot">
+<div class="slabel">Ce qui tombe toujours à l'examen</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×3</span> Annotations EF Core</h3>
+  <p>Savoir écrire <code>[Key]</code>, <code>[Required]</code>, <code>[StringLength]</code>, <code>[ForeignKey]</code>, <code>[EmailAddress]</code>, <code>[Range]</code>, <code>[Table]</code> et leurs arguments. Apparaît dans TOUS les examens.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×3</span> Migrations EF Core</h3>
+  <p>Connaître les 3 commandes : <code>Add-Migration NomMig</code>, <code>Update-Database</code>, <code>Remove-Migration</code>. Pour annuler la dernière migration appliquée : <code>Update-Database Mig2</code> (l'avant-dernière). Projet cible = <strong>AM.Infrastructure</strong>.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×3</span> Fluent API — Relations</h3>
+  <p>Savoir configurer HasOne/WithMany/HasForeignKey (1-*), HasMany/WithMany/*-* et HasDiscriminator (TPH). La FlightConfiguration et PlaneConfiguration apparaissent souvent.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×3</span> TPH vs TPT — Héritage EF Core</h3>
+  <p>TPH = 1 table, colonne discriminante, <code>HasDiscriminator</code>. TPT = 1 table par classe, <code>[Table]</code> sur classes filles ou <code>.ToTable()</code> en Fluent. Le TP demande les deux configurations.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×3</span> Repository + UnitOfWork</h3>
+  <p>Savoir expliquer pourquoi ces patterns (séparation, persistance, IDisposable). Savoir écrire l'interface IGenericRepository, IUnitOfWork, et leurs implémentations. Le problème sans UnitOfWork = pas de SaveChanges.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×2</span> LINQ — Méthodes avancées</h3>
+  <p>GroupBy retourne <code>IEnumerable&lt;IGrouping&lt;Key,T&gt;&gt;</code>. OfType&lt;T&gt;() filtre par type. Take(n)/Skip(n) pour paginer. OrderByDescending. Average(). Les exemples du TP (SeniorTravellers, DestinationGroupedFlights) sont fréquents.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×2</span> Visibilité par défaut C#</h3>
+  <p>Sans modificateur → <strong>internal</strong> (pas private, pas public). Les membres de classe sans modificateur → <strong>private</strong>. Question piège très fréquente.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×2</span> Action vs Func</h3>
+  <p><code>Action&lt;T&gt;</code> = void (pas de valeur de retour). <code>Func&lt;T, TResult&gt;</code> = retourne TResult (dernier type = type retour). Ex: <code>Func&lt;int&gt; d = CountAll</code>.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×2</span> Lazy Loading — Configuration</h3>
+  <p>3 conditions : installer EF Core.Proxies + <code>UseLazyLoadingProxies()</code> + toutes les nav properties = <code>virtual</code>. Sans une des 3 conditions → NullReferenceException.</p>
+</div>
+<div class="hot">
+  <h3>🔥 <span class="freq">×2</span> Architecture N-Couches vs N-Tiers</h3>
+  <p>N-Couches = <strong>logique</strong> (séparation fonctionnelle sur une même machine). N-Tiers = <strong>physique</strong> (déploiement sur plusieurs machines). Architecture Oignon = <strong>logique</strong>.</p>
+</div>
+</div>
+
+<!-- ═══════════════ EXAMENS ═══════════════ -->
+<div class="tab" id="tab-exams">
+  <div style="margin-bottom:20px">
+    <h2 style="font-size:1.3rem;margin-bottom:8px">📝 Examens Corrigés</h2>
+    <p style="color:var(--muted)">3 examens complets avec QCM et questions ouvertes — corrections détaillées et explications.</p>
+  </div>
+  <div id="exams-container"></div>
+</div>
+
+<!-- ═══════════════ CAS PRATIQUES ═══════════════ -->
+<div class="tab" id="tab-cases">
+  <div style="margin-bottom:20px">
+    <h2 style="font-size:1.3rem;margin-bottom:8px">📚 Cas Pratiques — Scénarios d'Examens</h2>
+    <p style="color:var(--muted)">Les 3 applications vues en examens avec leurs modèles complets et corrections.</p>
+  </div>
+  <div id="cases-container"></div>
+</div>
+
+<!-- ═══════════════ RÉVISION COMPLÈTE ═══════════════ -->
+<div class="tab" id="tab-revision">
+<div class="slabel">Études de cas — Révision complète avec code source</div>
+
+<!-- Sub-tabs -->
+<div class="mode-bar" id="rev-tabs">
+  <button class="mode-btn active" onclick="showRevTab('vehicules',this)">🚗 Véhicules Électriques</button>
+  <button class="mode-btn" onclick="showRevTab('clinique',this)">🏥 Clinique</button>
+  <button class="mode-btn" onclick="showRevTab('foire',this)">🎪 Foire/Exposition</button>
+  <button class="mode-btn" onclick="showRevTab('qcm-rev',this)">🎯 QCM Interactif</button>
+</div>
+
+<!-- Véhicules -->
+<div id="rev-vehicules">
+<div class="grid g2">
+  <div class="card">
+    <h2>🚗 Entités Véhicule Électrique</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">Vehicule</span>
+{
+    <span class="an">[Key]</span>
+    <span class="kw">public int</span> IdVehicule { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[Range(0, 100, ErrorMessage="Niveau invalide")]</span>
+    <span class="kw">public int</span> Batterie { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Marque { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Modele { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public double</span> PrixParHeure { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> IList&lt;<span class="cl">Reservation</span>&gt; Reservations { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">TrottinetteElectrique</span> : <span class="cl">Vehicule</span>
+{
+    <span class="kw">public int</span> NbPlaces { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">VehiculeElectrique</span> : <span class="cl">Vehicule</span>
+{
+    <span class="kw">public int</span> AutonomieKm { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public enum</span> Statut
+{
+    EnAttente, Confirmee, EnCours, Terminee, Annulee
+}
+
+<span class="kw">public class</span> <span class="cl">Client</span>
+{
+    <span class="an">[Key]</span>
+    <span class="kw">public int</span> Identifiant { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[Required][EmailAddress]</span>
+    <span class="kw">public string</span> Email { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Nom { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Telephone { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> IList&lt;<span class="cl">Reservation</span>&gt; Reservations { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+  </div>
+  <div class="card">
+    <h2>⚙️ ReservationConfiguration</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">ReservationConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Reservation</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Reservation</span>&gt; builder)
+    {
+        builder.HasOne(r => r.Client)
+               .WithMany(c => c.Reservations)
+               .HasForeignKey(r => r.ClientFK);
+
+        builder.HasOne(r => r.Vehicule)
+               .WithMany(v => v.Reservations)
+               .HasForeignKey(r => r.VehiculeFK);
+
+        <span class="cm">// Clé primaire composée</span>
+        builder.HasKey(r => <span class="kw">new</span> {
+            r.ClientFK, r.VehiculeFK, r.DateDebut
+        });
+    }
+}
+
+<span class="cm">// TPT pour les sous-classes</span>
+modelBuilder.Entity&lt;<span class="cl">TrottinetteElectrique</span>&gt;()
+    .ToTable(<span class="st">"VehiculeElectriques"</span>);
+modelBuilder.Entity&lt;<span class="cl">VehiculeElectrique</span>&gt;()
+    .ToTable(<span class="st">"TrottinetteElectriques"</span>);
+
+<span class="cm">// StationRecharge — virtual obligatoire</span>
+<span class="kw">public class</span> <span class="cl">StationRecharge</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> ICollection&lt;<span class="cl">Vehicule</span>&gt; Vehicules
+        { <span class="kw">get</span>; <span class="kw">set</span>; } <span class="cm">// MUST be virtual</span>
+}</code></pre>
+    <div class="alert warn">⚠️ NullReferenceException sur Vehicules → ajouter <code>virtual</code> + <code>UseLazyLoadingProxies()</code></div>
+  </div>
+</div>
+</div>
+
+<!-- Clinique -->
+<div id="rev-clinique" style="display:none">
+<div class="grid g2">
+  <div class="card">
+    <h2>🏥 Entités Clinique</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">Clinique</span>
+{
+    <span class="kw">public int</span> Id_Clinique { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Adresse { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> Capacite { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> NumTel { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> ICollection&lt;<span class="cl">Chambre</span>&gt; Chambres { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public enum</span> TypeChambre { Simple, Double }
+
+<span class="kw">public class</span> <span class="cl">Chambre</span>
+{
+    <span class="an">[Key]</span>
+    <span class="kw">public int</span> NumeroChambre { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[Display(Name = "Le prix de la chambre")]</span>
+    <span class="an">[Range(100, 1500)]</span>
+    <span class="an">[DataType(DataType.Currency)]</span>
+    <span class="kw">public float</span> Prix { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> TypeChambre TypeChambre { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> ICollection&lt;<span class="cl">Admission</span>&gt; Admissions { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Admission</span>
+{
+    <span class="an">[ForeignKey("Patient")]</span>
+    <span class="kw">public string</span> PatientFK { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Patient</span> Patient { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[ForeignKey("Chambre")]</span>
+    <span class="kw">public int</span> ChambreFK { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Chambre</span> Chambre { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> DateTime DateAdmission { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> MotifAdmission { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> NbJours { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+  </div>
+  <div class="card">
+    <h2>⚙️ ChambreConfiguration + Conventions</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">ChambreConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Chambre</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Chambre</span>&gt; builder)
+    {
+        builder.ToTable(<span class="st">"Rooms"</span>);
+    }
+}
+
+<span class="cm">// Relation Chambre → Clinique</span>
+modelBuilder.Entity&lt;<span class="cl">Chambre</span>&gt;()
+    .HasOne(c => c.Clinique)
+    .WithMany(cl => cl.Chambres)
+    .HasForeignKey(c => c.CliniqueFK);
+
+<span class="cm">// Pré-convention max 100 chars</span>
+<span class="kw">protected override void</span> ConfigureConventions(
+    ModelConfigurationBuilder configurationBuilder)
+{
+    configurationBuilder
+        .Properties&lt;<span class="kw">string</span>&gt;()
+        .HaveMaxLength(<span class="nu">100</span>);
+    <span class="kw">base</span>.ConfigureConventions(configurationBuilder);
+}
+
+<span class="cm">// LINQ : chambres groupées par prix</span>
+<span class="kw">public</span> IEnumerable&lt;IGrouping&lt;<span class="kw">float</span>, Chambre&gt;&gt;
+    PriceGroupedRooms(List&lt;Chambre&gt; rooms)
+    => rooms.GroupBy(r => r.Prix);</code></pre>
+    <div class="alert danger">Erreur "No DbContext found" → Changer Default Project PMC vers <strong>AM.Infrastructure</strong></div>
+  </div>
+</div>
+</div>
+
+<!-- Foire -->
+<div id="rev-foire" style="display:none">
+<div class="grid g2">
+  <div class="card">
+    <h2>🎪 Entités Foire / Exposition</h2>
+    <pre><code><span class="kw">public class</span> <span class="cl">Foire</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Nom { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Address { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[DataType(DataType.Date)]</span>
+    <span class="kw">public</span> DateTime DateDebut { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[DataType(DataType.Date)]</span>
+    <span class="kw">public</span> DateTime DateFin { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> ICollection&lt;<span class="cl">Stand</span>&gt; Stands { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Exposant</span>
+{
+    <span class="kw">public int</span> ExposantId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Nom { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> Prenom { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> ICollection&lt;<span class="cl">Stand</span>&gt; Stands { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="cl">Stand</span>
+{
+    <span class="kw">public int</span> IdFoire { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Foire</span> Foire { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> ExposantFKey { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public virtual</span> <span class="cl">Exposant</span> Exposant { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[DataType(DataType.Date)]</span>
+    <span class="kw">public</span> DateTime DateReservation { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public bool</span> EstReserve { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="an">[Range(6, 20)]</span>
+    <span class="kw">public int</span> Superficie { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public float</span> Prix { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+  </div>
+  <div>
+    <div class="card">
+      <h2>⚙️ StandConfiguration</h2>
+      <pre><code><span class="kw">public class</span> <span class="cl">StandConfiguration</span>
+    : <span class="cl">IEntityTypeConfiguration</span>&lt;<span class="cl">Stand</span>&gt;
+{
+    <span class="kw">public void</span> Configure(
+        EntityTypeBuilder&lt;<span class="cl">Stand</span>&gt; builder)
+    {
+        builder.HasOne(s => s.Exposant)
+               .WithMany(e => e.Stands)
+               .HasForeignKey(s => s.ExposantFKey);
+
+        builder.HasOne(s => s.Foire)
+               .WithMany(f => f.Stands)
+               .HasForeignKey(s => s.IdFoire);
+
+        builder.HasKey(s => <span class="kw">new</span> {
+            s.ExposantFKey, s.IdFoire, s.DateReservation
+        });
+    }
+}</code></pre>
+    </div>
+    <div class="card">
+      <h2>🔍 Services LINQ — StandService</h2>
+      <pre><code><span class="cm">// Stands réservés par exposant sur une période</span>
+<span class="kw">public</span> IList&lt;Stand&gt; GetStand(
+    Exposant expo, DateTime debut, DateTime fin)
+    => Stands.Where(s =>
+        s.Exposant == expo &amp;&amp;
+        s.DateReservation >= debut &amp;&amp;
+        s.DateReservation &lt;= fin &amp;&amp;
+        s.EstReserve).ToList();
+
+<span class="cm">// Gain prévu pour un exposant sur période</span>
+<span class="kw">public float</span> GetGainPrevu(
+    Exposant expo, DateTime debut, DateTime fin)
+    => Stands.Where(s =>
+        s.Exposant == expo &amp;&amp;
+        s.DateReservation >= debut &amp;&amp;
+        s.DateReservation &lt;= fin)
+    .Sum(s => s.Prix);
+
+<span class="cm">// GetSuperExposant : superficie max</span>
+<span class="kw">public</span> IEnumerable&lt;Exposant&gt; GetSuperExposant(Foire foire)
+{
+    <span class="kw">var</span> groups = Stands
+        .Where(s => s.Foire == foire)
+        .GroupBy(s => s.ExposantFKey)
+        .Select(g => <span class="kw">new</span> {
+            ExposantId = g.Key,
+            TotalSup = g.Sum(s => s.Superficie)
+        });
+    <span class="kw">var</span> max = groups.Max(g => g.TotalSup);
+    <span class="kw">return</span> groups
+        .Where(g => g.TotalSup == max)
+        .Select(g => Stands
+            .First(s => s.ExposantFKey == g.ExposantId).Exposant);
+}
+
+<span class="cm">// Convention longueur max 150</span>
+configurationBuilder.Properties&lt;<span class="kw">string</span>&gt;()
+    .HaveMaxLength(<span class="nu">150</span>);</code></pre>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- QCM Interactif -->
+<div id="rev-qcm-rev" style="display:none">
+<div class="card">
+  <h2>🎯 QCM Interactif — Entraînement</h2>
+  <div id="rev-quiz-container"></div>
+</div>
+</div>
+
+</div><!-- end tab-revision -->
+
+<script>
+// ═══════════════ TAB NAVIGATION ═══════════════
+function show(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tn-' + name).classList.add('active');
+  if (name === 'quiz') buildQuiz();
+  if (name === 'exams') buildExams();
+  if (name === 'cases') buildCases();
+  if (name === 'revision') buildRevQuiz();
+  document.body.classList.remove('sidebar-open');
+}
+
+
+// ═══════════════ TP ACCORDION ═══════════════
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-open');
+}
+
+function toggleTP(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('span:last-child');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▶' : '▼';
+}
+
+// ═══════════════ EF VISUALIZER ═══════════════
+function visualize() {
+  const e1 = document.getElementById('e1').value.trim();
+  const e2 = document.getElementById('e2').value.trim();
+  const rt = document.getElementById('rtype').value;
+  if (!e1 || !e2 || !rt) { alert('Remplissez tous les champs'); return; }
+  let code = '', fluent = '';
+  if (rt === '1-1') {
+    code = `public class ${e1}\n{\n    public int Id { get; set; }\n    public virtual ${e2} ${e2} { get; set; }\n}\n\npublic class ${e2}\n{\n    public int Id { get; set; }\n    public int ${e1}Id { get; set; }  // FK\n    public virtual ${e1} ${e1} { get; set; }\n}`;
+    fluent = `// Fluent API:\nbuilder.HasOne(a => a.${e2}).WithOne(b => b.${e1}).HasForeignKey<${e2}>(b => b.${e1}Id);`;
+  } else if (rt === '1-n') {
+    code = `public class ${e1}\n{\n    public int Id { get; set; }\n    public virtual IList<${e2}> ${e2}s { get; set; }\n}\n\npublic class ${e2}\n{\n    public int Id { get; set; }\n    public int ${e1}Id { get; set; }  // FK\n    public virtual ${e1} ${e1} { get; set; }\n}`;
+    fluent = `// Fluent API:\nbuilder.HasOne(b => b.${e1}).WithMany(a => a.${e2}s).HasForeignKey(b => b.${e1}Id);`;
+  } else if (rt === 'n-1') {
+    code = `public class ${e1}\n{\n    public int Id { get; set; }\n    public int ${e2}Id { get; set; }  // FK\n    public virtual ${e2} ${e2} { get; set; }\n}\n\npublic class ${e2}\n{\n    public int Id { get; set; }\n    public virtual IList<${e1}> ${e1}s { get; set; }\n}`;
+    fluent = `// Fluent API:\nbuilder.HasOne(a => a.${e2}).WithMany(b => b.${e1}s).HasForeignKey(a => a.${e2}Id);`;
+  } else if (rt === 'n-n') {
+    code = `public class ${e1}\n{\n    public int Id { get; set; }\n    public virtual IList<${e2}> ${e2}s { get; set; }\n}\n\npublic class ${e2}\n{\n    public int Id { get; set; }\n    public virtual IList<${e1}> ${e1}s { get; set; }\n}\n\n// Table de jonction (optionnelle) :\npublic class ${e1}${e2}\n{\n    public int ${e1}Id { get; set; }\n    public int ${e2}Id { get; set; }\n    // + propriétés supplémentaires...\n}`;
+    fluent = `// Fluent API:\nbuilder.HasMany(a => a.${e2}s).WithMany(b => b.${e1}s)\n       .UsingEntity<${e1}${e2}>();`;
+  }
+  document.getElementById('rel-code').textContent = code.trim();
+  document.getElementById('rel-fluent').innerHTML = `<pre style="margin-top:0;border-color:var(--green)">${fluent}</pre>`;
+  const result = document.getElementById('rel-result');
+  result.style.display = 'block';
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ═══════════════ QUIZ ═══════════════
+const QUESTIONS = [
+  { q: "Quelle est la visibilité par défaut d'une classe C# sans modificateur ?", o: ["public", "private", "internal", "protected"], a: 2, e: "Sans modificateur, les types sont 'internal' (accessible dans le même assembly)." },
+  { q: "Quelle commande EF Core ajoute une migration ?", o: ["Create-Migration", "Add-Migration", "New-Migration", "Make-Migration"], a: 1, e: "La commande correcte est Add-Migration NomMigration depuis la console PM." },
+  { q: "Pour annuler la dernière migration appliquée (Mig3), on exécute :", o: ["Remove-Migration", "Update-Database Mig3", "Update-Database Mig2", "Delete-Migration Mig3"], a: 2, e: "Update-Database Mig2 revient à l'état avant Mig3. Remove-Migration ne fonctionne que si non appliquée." },
+  { q: "En TPH (Table Per Hierarchy), quelle méthode Fluent API configure la colonne discriminante ?", o: ["HasDiscriminator()", "HasTable()", "HasInheritance()", "HasTypeMapping()"], a: 0, e: "HasDiscriminator<int>('IsTraveller') configure la colonne discriminante pour l'héritage TPH." },
+  { q: "Quelle interface doit implémenter UnitOfWork pour libérer DbContext ?", o: ["IDisposable", "IReleasable", "IFinalizeable", "IManaged"], a: 0, e: "DbContext est une ressource non managée. IDisposable permet la libération déterministe via Dispose()." },
+  { q: "Action<Plane> est un délégué qui :", o: ["Retourne un Plane", "Prend un Plane et retourne void", "Prend un Plane et retourne bool", "Ne prend aucun paramètre"], a: 1, e: "Action<T> représente une méthode void qui prend T en paramètre. Il ne retourne jamais de valeur." },
+  { q: "La méthode LINQ OfType<T>() :", o: ["Filtre les éléments par type T", "Convertit tous les éléments en T", "Sélectionne les propriétés de type T", "Groupe par type T"], a: 0, e: "OfType<Traveller>() filtre la collection pour ne garder que les éléments qui sont des Traveller." },
+  { q: "En ASP.NET MVC, [ValidateAntiForgeryToken] protège contre :", o: ["XSS (Cross-Site Scripting)", "SQL Injection", "CSRF (Cross-Site Request Forgery)", "Buffer Overflow"], a: 2, e: "ValidateAntiForgeryToken valide le token anti-CSRF généré par asp-antiforgery dans les formulaires Razor." },
+  { q: "Quel package NuGet installer dans AM.Infrastructure pour les migrations ?", o: ["EF Core.Design", "EF Core.Tools", "EF Core.Migrations", "EF Core.Schema"], a: 1, e: "Microsoft.EntityFrameworkCore.Tools fournit les commandes Add-Migration et Update-Database dans la console PM." },
+  { q: "N-Tiers vs N-Couches : quelle architecture est PHYSIQUE ?", o: ["N-Couches", "Architecture Oignon", "N-Tiers", "MVC"], a: 2, e: "N-Tiers = architecture physique (déploiement sur plusieurs machines). N-Couches = logique (sur une même machine)." },
+  { q: "Pour le TPT via annotations, où mettre [Table] ?", o: ["Sur la classe mère", "Sur toutes les classes", "Sur les classes filles uniquement", "Sur l'interface"], a: 2, e: "[Table('Travellers')] s'applique sur les classes filles (Traveller, Staff) pour créer une table par type." },
+  { q: "Quelle est la stratégie d'héritage EF Core par défaut ?", o: ["TPT (Table Per Type)", "TPC (Table Per Concrete)", "TPH (Table Per Hierarchy)", "Aucune stratégie par défaut"], a: 2, e: "EF Core utilise TPH (une seule table avec colonne discriminante) par défaut." },
+  { q: "Func<string, double> représente :", o: ["Méthode void prenant une string", "Méthode retournant une string", "Méthode prenant une string et retournant un double", "Méthode prenant un double et retournant une string"], a: 2, e: "Func<T1, TResult> : le dernier paramètre de type est le type retour. Donc Func<string, double> = (string) => double." },
+  { q: "Le problème sans UnitOfWork dans les services est :", o: ["Performances dégradées", "Pas de persistance des données (pas de SaveChanges)", "Impossible de créer des instances", "Erreur de compilation"], a: 1, e: "Sans UnitOfWork, on ne peut pas appeler SaveChanges() depuis ApplicationCore (pas de référence au DbContext)." },
+  { q: "Quelle propriété doit être 'virtual' pour le Lazy Loading ?", o: ["Propriétés scalaires (int, string)", "Propriétés de navigation uniquement", "Toutes les propriétés", "Seulement la clé primaire"], a: 1, e: "Seules les propriétés de navigation (Plane, IList<Passenger>) doivent être virtual pour que les proxies EF puissent les intercepter." }
+];
+
+let answers = {};
+function buildQuiz() {
+  const wrap = document.getElementById('qwrap');
+  if (wrap.children.length > 0) return;
+  wrap.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.id = 'q' + i;
+    const opts = q.o.map((o, j) => `
+      <label id="q${i}o${j}">
+        <input type="radio" name="q${i}" value="${j}">
+        ${String.fromCharCode(97+j)}) ${o}
+      </label>`).join('');
+    card.innerHTML = `
+      <div class="qtext">Q${i+1}. ${q.q}</div>
+      <div class="opts">${opts}</div>
+      <div class="expl" id="expl${i}">${q.e}</div>`;
+    wrap.appendChild(card);
+    card.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('change', () => { answers[i] = parseInt(inp.value); });
+    });
+  });
+}
+
+function submitQuiz() {
+  buildQuiz();
+  let score = 0;
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById('q' + i);
+    card.querySelectorAll('.opts label').forEach((l, j) => {
+      l.classList.remove('correct','wrong');
+    });
+    const userAns = answers[i];
+    if (userAns !== undefined) {
+      const lbl = document.getElementById(`q${i}o${userAns}`);
+      lbl.classList.add(userAns === q.a ? 'correct' : 'wrong');
+      document.getElementById(`q${i}o${q.a}`).classList.add('correct');
+      if (userAns === q.a) score++;
+    } else {
+      document.getElementById(`q${i}o${q.a}`).classList.add('correct');
+    }
+    document.getElementById('expl' + i).style.display = 'block';
+  });
+  const pct = Math.round(score/QUESTIONS.length*100);
+  const existing = document.getElementById('score-display');
+  if (existing) existing.remove();
+  const scoreEl = document.createElement('div');
+  scoreEl.id = 'score-display';
+  scoreEl.className = 'score-box';
+  scoreEl.innerHTML = `<h2>${score}/${QUESTIONS.length} — ${pct}%</h2>
+    <p style="color:var(--muted)">${pct >= 80 ? '🎉 Excellent !' : pct >= 60 ? '👍 Bien, continuez !' : '📚 Révisez encore...'}</p>`;
+  document.getElementById('qwrap').insertBefore(scoreEl, document.getElementById('qwrap').firstChild);
+}
+
+function resetQuiz() {
+  answers = {};
+  document.getElementById('qwrap').innerHTML = '';
+  const existing = document.getElementById('score-display');
+  if (existing) existing.remove();
+  buildQuiz();
+}
+
+// ═══════════════ REVISION TAB ═══════════════
+function showRevTab(name, btn) {
+  ['vehicules','clinique','foire','qcm-rev'].forEach(n => {
+    const el = document.getElementById('rev-' + n);
+    if (el) el.style.display = n === name ? '' : 'none';
+  });
+  document.querySelectorAll('#rev-tabs .mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'qcm-rev') buildRevQuiz();
+}
+
+// ═══════════════ REVISION QCM ═══════════════
+const REV_QUESTIONS = [
+  {q:"Quelle est la différence principale entre .NET Core et .NET Framework ?",o:["a) .NET Core ne supporte pas C#","b) .NET Core est multiplateforme (Windows, Linux, macOS)","c) .NET Framework est open source","d) .NET Core ne peut pas accéder aux bases de données"],c:1,e:".NET Core est open source et cross-platform. .NET Framework est limité à Windows."},
+  {q:"Qu'est-ce que le mot-clé 'virtual' permet en C# ?",o:["a) Déclarer une méthode sans corps","b) Empêcher l'héritage d'une classe","c) Permettre à une méthode d'être redéfinie dans une classe fille avec 'override'","d) Déclarer un champ statique"],c:2,e:"virtual + override = polymorphisme d'héritage. La méthode peut être redéfinie dans les classes dérivées."},
+  {q:"Pour annuler Mig3 déjà appliquée (Init, Mig1, Mig2, Mig3), quelle commande ?",o:["a) Remove-Migration Mig3","b) Update-Database Mig2","c) Delete-Migration Mig3","d) Remove-Migration"],c:1,e:"Update-Database Mig2 = revenir à l'état après Mig2 (annule Mig3). Remove-Migration ne fonctionne que si non appliquée."},
+  {q:"Quelle est la clé primaire par défaut EF Core pour 'Vehicule' ?",o:["a) VehiculeKey","b) Id","c) VehiculeId","d) b) et c) sont tous les deux valides"],c:3,e:"Convention EF Core : 'Id' ET 'VehiculeId' sont tous les deux reconnus automatiquement comme PK."},
+  {q:"Où doit-on appeler ApplyConfiguration(new MaConfig()) ?",o:["a) Dans OnConfiguring()","b) Dans ConfigureConventions()","c) Dans OnModelCreating()","d) Dans le constructeur du DbContext"],c:2,e:"ApplyConfiguration() s'appelle dans OnModelCreating(ModelBuilder modelBuilder)."},
+  {q:"Différence entre Action<T> et Func<T, R> en C# ?",o:["a) Action peut retourner une valeur, Func non","b) Func peut retourner une valeur, Action non (void)","c) Les deux peuvent retourner une valeur","d) Func est réservé aux méthodes statiques"],c:1,e:"Action = pas de retour (void). Func = avec valeur de retour (dernier paramètre = type de retour)."},
+  {q:"Pour configurer TPH, quelle est la bonne approche ?",o:["a) Annoter chaque classe fille avec [Table]","b) Utiliser HasDiscriminator() avec les valeurs de chaque sous-type","c) Annoter la classe mère avec [Table]","d) Utiliser ToTable() pour chaque entité"],c:1,e:"TPH utilise HasDiscriminator().HasValue<Type>(valeur). TPT = [Table] sur les classes filles."},
+  {q:"Qu'est-ce que le Lazy Loading requiert ?",o:["a) Appeler .Include() dans les requêtes","b) Propriétés de navigation 'virtual' + package Proxies + UseLazyLoadingProxies()","c) Désactiver le ChangeTracker","d) Utiliser .Load() explicitement"],c:1,e:"Lazy Loading nécessite : 1) props de nav virtuelles, 2) Proxies installé, 3) UseLazyLoadingProxies() dans OnConfiguring."},
+  {q:"Visibilité par défaut d'un type C# sans modificateur (ex: struct T {}) ?",o:["a) public","b) private","c) internal","d) protected"],c:2,e:"En C#, les types au niveau namespace sans modificateur sont 'internal' par défaut."},
+  {q:"Différence entre First() et FirstOrDefault() en LINQ ?",o:["a) First() retourne le dernier élément","b) FirstOrDefault() lève une exception si vide","c) First() lève une exception si vide, FirstOrDefault() retourne la valeur par défaut","d) Pas de différence"],c:2,e:"First() lève InvalidOperationException si vide. FirstOrDefault() retourne null (ou 0) si vide."},
+  {q:"Dans l'architecture Oignon, quel projet référence quel projet ?",o:["a) AM.ApplicationCore → AM.Infrastructure","b) AM.Infrastructure → AM.ApplicationCore","c) AM.UI.WEB → AM.ApplicationCore seulement","d) Tous se référencent mutuellement"],c:1,e:"AM.Infrastructure référence AM.ApplicationCore. AM.UI.WEB référence AM.Infrastructure ET AM.ApplicationCore."},
+  {q:"Quelle méthode configure HaveMaxLength() pour TOUTES les propriétés string globalement ?",o:["a) modelBuilder.Properties<string>().HasMaxLength()","b) configurationBuilder.Properties<string>().HaveMaxLength() dans ConfigureConventions()","c) builder.HasMaxLength() dans chaque config","d) [StringLength] sur chaque entité"],c:1,e:"ConfigureConventions() avec configurationBuilder.Properties<string>().HaveMaxLength(n) applique la longueur max à TOUTES les strings."}
+];
+
+let revQuizBuilt = false;
+function buildRevQuiz() {
+  if (revQuizBuilt) return;
+  revQuizBuilt = true;
+  const container = document.getElementById('rev-quiz-container');
+  if (!container) return;
+  REV_QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'qcard';
+    div.id = 'rq' + i;
+    const opts = q.o.map((o, j) => `<label id="rq${i}l${j}"><input type="radio" name="rq${i}" value="${j}" style="accent-color:var(--accent)"> ${o}</label>`).join('');
+    div.innerHTML = `<div class="qtext">Q${i+1}. ${q.q}</div><div class="opts">${opts}</div>
+      <button class="btn btn-p" style="font-size:12px;padding:6px 14px;margin-top:8px" onclick="checkRevQ(${i},${q.c})">Vérifier</button>
+      <div class="expl" id="rqe${i}" style="display:none">${q.e}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function checkRevQ(i, correct) {
+  const radios = document.querySelectorAll(`input[name="rq${i}"]`);
+  let sel = -1;
+  radios.forEach(r => { if (r.checked) sel = parseInt(r.value); });
+  document.querySelectorAll(`#rq${i} .opts label`).forEach((l, j) => {
+    l.className = j === correct ? 'correct' : (j === sel && sel !== correct ? 'wrong' : '');
+  });
+  const expl = document.getElementById('rqe' + i);
+  if (expl) expl.style.display = 'block';
+  radios.forEach(r => r.disabled = true);
+}
+
+// ═══════════════ EXAMS DATA ═══════════════
+const EXAMS = [
+  {
+    id:"ex1", label:"Examen 1", date:"29 Octobre 2025",
+    context:"Gestion de réservations de véhicules (Vehicule, VehiculeElectrique, TrotinetteElectrique, Reservation, Client)",
+    sections:[
+      {title:"Partie I — QCM (8 pts)", type:"qcm", questions:[
+        {n:1,pts:0.5,q:"Laquelle associe correctement chaque architecture à son type ?",o:["N-couches=Physique, Oignon=Physique, N-tiers=Logique","N-couches=Logique, Oignon=Logique, N-tiers=Physique","N-couches=Physique, Oignon=Logique, N-tiers=Physique","N-couches=Logique, N-tiers=Logique, Oignon=Physique"],ans:"b) N-couches=Logique, Oignon=Logique, N-tiers=Physique",expl:"N-Tiers = physique (déploiement). N-Couches et Oignon = logique (organisation du code)."},
+        {n:2,pts:0.5,q:"Laquelle est FAUSSE concernant C# ?",o:["Supporte l'héritage","Ne supporte pas les types génériques","Supporte les délégués","Est orienté objet"],ans:"b) Ne supporte pas les types génériques",expl:"C# supporte parfaitement les génériques (<T>). C'est une fonctionnalité clé du langage."},
+        {n:3,pts:0.5,q:"Complétez : Func<int> d = ____;",o:["Func<int> d = new Func(CountAll);","Func<int> d = CountAll;","Func d<int> = CountAll;","int Func<> d = CountAll;"],ans:"b) Func<int> d = CountAll;",expl:"Func<int> est un délégué prédéfini. L'affectation directe d'une méthode compatible est correcte."},
+        {n:4,pts:0.5,q:"Quelle est la bonne déclaration d'une classe générique G ?",o:["public class G[T]{}","public class G(T){}","public class G<T>{}","generic class G{}"],ans:"c) public class G<T>{}",expl:"La syntaxe des génériques en C# utilise les chevrons <T>."},
+        {n:5,pts:0.5,q:"Que représente : public int F { get; } ?",o:["Une propriété","Un champ","Une méthode","Un constructeur"],ans:"a) Une propriété",expl:"{ get; } est la syntaxe d'une propriété auto-implémentée en lecture seule."},
+        {n:6,pts:0.5,q:"Quelle est la visibilité par défaut en C# sans modificateur ?",o:["public","private","protected","internal"],ans:"d) internal",expl:"Sans modificateur explicite, un type ou membre est 'internal' (accessible dans le même assembly)."},
+        {n:7,pts:0.5,q:"LINQ pour trier dans l'ordre opposé : from e in t ______ select e",o:["orderby e desc","orderby -e","sort e reverse","order desc e"],ans:"b) orderby -e",expl:"En syntaxe requête LINQ, 'orderby -e' inverse le tri naturel."},
+        {n:8,pts:0.5,q:"Pour annuler Migration3 et revenir à Migration2, quelle commande ?",o:["Remove-Migration Migration3","Update-Database Migration2","Rollback-Migration Migration3","Undo-Migration"],ans:"b) Update-Database Migration2",expl:"Update-Database suivi du nom de la migration cible revient à cet état."}
+      ]},
+      {title:"Partie II — Questions ouvertes (12 pts)", type:"open", questions:[
+        {n:9,pts:0.5,q:"Convention EF Core pour la clé primaire de la classe 'Shape' ?",ans:"ShapeId (ClassName + Id)",expl:"Convention : le nom de la classe suivi de 'Id' est reconnu automatiquement comme PK."},
+        {n:10,pts:0.5,q:"Comment mapper TPT pour TrotinetteElectrique et VehiculeElectrique ?",ans:"Mettre [Table(\"NomTable\")] sur chaque classe enfant",expl:"TPT = une table par classe concrète. [Table] sur chaque enfant le configure en TPT."},
+        {n:11,pts:1,q:"Propriété de navigation dans Vehicule pour ses Reservations (IList).",ans:"public IList<Reservation> Reservations { get; set; }",expl:"Navigation vers la collection de Reservations liées à ce Vehicule."},
+        {n:12,pts:1,q:"Classe TrotinetteElectrique (hérite de Vehicule, ajout : NbPlaces int).",ans:"public class TrotinetteElectrique : Vehicule { public int NbPlaces { get; set; } }",expl:"Héritage simple avec une nouvelle propriété."},
+        {n:13,pts:1,q:"Classe VehiculeElectrique (hérite de Vehicule, ajout : AutonomiKm int).",ans:"public class VehiculeElectrique : Vehicule { public int AutonomiKm { get; set; } }",expl:"Même pattern, propriété différente."},
+        {n:14,pts:1,q:"Enum Statut (EnAttente, Confirmee, EnCours, Terminee, Annulee).",ans:"public enum Statut { EnAttente, Confirmee, EnCours, Terminee, Annulee }",expl:"Un enum C# avec 5 valeurs."},
+        {n:15,pts:0.5,q:"Annotation pour clé primaire non-conventionnelle 'Identifiant' ?",ans:"[Key] au-dessus de public int Identifiant { get; set; }",expl:"[Key] force EF Core à reconnaître cette propriété comme PK."},
+        {n:16,pts:0.5,q:"Annotations pour Email (champ requis, format email) ?",ans:"[Required] et [EmailAddress]",expl:"[Required] = NOT NULL. [EmailAddress] = validation format email."},
+        {n:17,pts:0.5,q:"Annotation pour Niveau entre 0 et 100 avec message 'Niveau Invalid' ?",ans:"[Range(0, 100, ErrorMessage=\"Niveau Invalid\")]",expl:"[Range(min, max, ErrorMessage)] valide la plage et affiche le message en cas d'erreur."},
+        {n:18,pts:1,q:"Configurer TPT dans OnModelCreating pour TrotinetteElectrique et VehiculeElectrique.",ans:"modelBuilder.Entity<TrotinetteElectrique>().ToTable(\"VehiculeElectriques\");\nmodelBuilder.Entity<VehiculeElectrique>().ToTable(\"VehiculesElectriques\");",expl:"Fluent API pour TPT : .ToTable() sur chaque classe enfant."},
+        {n:19,pts:1.5,q:"Configurer en Fluent API la relation Reservation ↔ Client (ClientFK) et Reservation ↔ Vehicule (VehiculeFK).",ans:"modelBuilder.Entity<Reservation>()\n  .HasOne(r => r.Client)\n  .WithMany(c => c.Reservations)\n  .HasForeignKey(r => r.ClientFK);\nmodelBuilder.Entity<Reservation>()\n  .HasOne(r => r.Vehicule)\n  .WithMany(v => v.Reservations)\n  .HasForeignKey(r => r.VehiculeFK);",expl:"HasOne → WithMany → HasForeignKey pour chaque relation."},
+        {n:20,pts:0.5,q:"Clé primaire composite (ClientFK, VehiculeFK, DateDebut) en Fluent API ?",ans:"builder.HasKey(r => new { r.ClientFK, r.VehiculeFK, r.DateDebut });",expl:"HasKey avec type anonyme pour les clés composites."},
+        {n:21,pts:0.5,q:"Où appelle-t-on ApplyConfiguration(new ReservationConfig()) ?",ans:"Dans la méthode OnModelCreating (pas OnConfiguring)",expl:"modelBuilder est disponible uniquement dans OnModelCreating."},
+        {n:22,pts:0.5,q:"Commande pour créer la première migration 'Migration1' ?",ans:"Add-Migration Migration1",expl:"Commande Package Manager Console pour créer une migration."},
+        {n:23,pts:0.5,q:"Fix : erreur 'entity type requires a primary key' sur IdVehicule ?",ans:"Ajouter [Key] au-dessus de public int IdVehicule { get; set; }",expl:"EF Core ne reconnaît pas IdVehicule comme PK, [Key] le force."},
+        {n:24,pts:0.5,q:"Appliquer la migration à la base de données ?",ans:"Update-Database",expl:"Update-Database exécute les migrations en attente."},
+        {n:25,pts:0.5,q:"Fix : NullReferenceException lors de l'accès à Vehicules (lazy loading) ?",ans:"Ajouter 'virtual' : public virtual ICollection<Vehicule> Vehicules { get; set; }",expl:"Lazy loading requiert virtual sur les propriétés de navigation."}
+      ]}
+    ]
+  },
+  {
+    id:"ex3", label:"Examen 3", date:"31 Octobre 2025",
+    context:"Gestion de cliniques (Patient, Chambre, Clinique, Admission, TypeChambre enum)",
+    sections:[
+      {title:"Partie I — QCM (8 pts)", type:"qcm", questions:[
+        {n:1,pts:0.5,q:"DbContext sert à :",o:["Créer des interfaces graphiques","Définir des routes HTTP","Interagir avec la base de données","Gérer les utilisateurs"],ans:"c) Interagir avec la base de données",expl:"DbContext est la classe principale d'EF Core pour les opérations BD."},
+        {n:2,pts:0.5,q:".NET Core se distingue de .NET Framework par :",o:["Support de C# uniquement","Intégration Azure","Cross-platform (Linux, Mac, Windows)","Interface XAML"],ans:"c) Cross-platform",expl:".NET Core est open source et fonctionne sur Windows, Linux et macOS."},
+        {n:3,pts:0.5,q:"Quel type d'héritage EF Core est utilisé par défaut ?",o:["TPT","TPC","TPH","TPE"],ans:"c) TPH (Table Per Hierarchy)",expl:"TPH est la stratégie par défaut : toute la hiérarchie dans une seule table."},
+        {n:4,pts:0.5,q:"'T' dans une classe générique est appelé :",o:["Paramètre de type","Type générique","Variable de type","Classe abstraite"],ans:"a) Paramètre de type",expl:"T est un 'type parameter' (paramètre de type), pas un type concret."},
+        {n:5,pts:1,q:"LINQ : moyenne des valeurs > 20 dans une liste d ?",o:["d.Average(v => v > 20)","d.Where(v => v > 20).Count()","d.Where(v => v > 20).Average()","d.Select(v => v > 20).Average()"],ans:"c) d.Where(v => v > 20).Average()",expl:"Where filtre, puis Average calcule la moyenne des éléments filtrés."},
+        {n:6,pts:0.5,q:"Annotation pour afficher 'Nom Employé' dans un formulaire ?",o:["[Name(\"Nom Employé\")]","[Label(\"Nom Employé\")]","[Display(Name = \"Nom Employé\")]","[Title(\"Nom Employé\")]"],ans:"c) [Display(Name = \"Nom Employé\")]",expl:"[Display(Name=...)] est l'annotation pour personnaliser le libellé affiché."},
+        {n:7,pts:0.5,q:"SaveChanges() :",o:["Charge les entités","Annule les modifications","Crée des migrations","Enregistre toutes les modifications en base"],ans:"d) Enregistre toutes les modifications en base",expl:"SaveChanges() persiste toutes les opérations trackées (Add/Update/Delete) en base."},
+        {n:8,pts:0.5,q:"Les migrations EF Core peuvent être gérées via :",o:["Visual Studio GUI uniquement","Package Manager Console ou dotnet CLI","Git uniquement","SQL Server Management Studio"],ans:"b) Package Manager Console ou dotnet CLI",expl:"Deux outils : PMC (Add-Migration...) ou CLI (dotnet ef migrations add...)."},
+        {n:9,pts:0.5,q:"Les méthodes d'extension permettent de :",o:["Hériter d'une classe sealed","Remplacer une méthode existante","Ajouter des fonctionnalités sans modifier le code source","Créer des génériques"],ans:"c) Ajouter des fonctionnalités sans modifier le code source",expl:"Les méthodes d'extension étendent un type existant sans le modifier."},
+        {n:10,pts:0.5,q:"Dans l'architecture Oignon, la couche la plus interne contient :",o:["L'interface utilisateur","La base de données","Les migrations","La logique métier (Domain)"],ans:"d) La logique métier (Domain)",expl:"Le Domain est le noyau de l'architecture Oignon : entités et règles métier."}
+      ]},
+      {title:"Partie II — Questions ouvertes (12 pts)", type:"open", questions:[
+        {n:11,pts:1,q:"Propriété de navigation dans Clinique vers ses Chambres (ICollection).",ans:"public ICollection<Chambre> Chambres { get; set; }",expl:"ICollection<T> pour une relation 1-to-many."},
+        {n:12,pts:0.5,q:"Enum TypeChambre avec valeurs Simple et Double.",ans:"public enum TypeChambre { Simple, Double }",expl:"enum simple avec 2 valeurs."},
+        {n:14,pts:2,q:"Annotations pour Chambre : [Key] sur NumeroChambre, display 'le prix de la chambre', [Range(100,500)] sur Prix.",ans:"[Key] public int NumeroChambre { get; set; }\n[Display(Name=\"le prix de la chambre\")]\n[Range(100,500)]\npublic decimal Prix { get; set; }",expl:"[Key] pour PK non conventionnelle, [Display] pour le libellé, [Range] pour la validation."},
+        {n:15,pts:1,q:"Annotations FK dans Admission : une pour Patient et une pour ChambreFK.",ans:"[ForeignKey(\"Patient\")]\npublic int PatientId { get; set; }\n[ForeignKey(\"ChambreFK\")]\npublic int ChambreId { get; set; }",expl:"[ForeignKey(\"NomPropriété\")] lie une FK à une propriété de navigation."},
+        {n:16,pts:1,q:"Classe de configuration Fluent API pour Chambre avec ToTable(\"Rooms\").",ans:"public class ChambreConfig : IEntityTypeConfiguration<Chambre>\n{\n    public void Configure(EntityTypeBuilder<Chambre> builder)\n    {\n        builder.ToTable(\"Rooms\");\n    }\n}",expl:"IEntityTypeConfiguration<T> avec méthode Configure."},
+        {n:17,pts:2,q:"Configurer en OnModelCreating : Chambre.Clinique (1 Clinique → N Chambres, FK=CliniqueFK).",ans:"modelBuilder.Entity<Chambre>()\n  .HasOne(c => c.Clinique)\n  .WithMany(cl => cl.Chambres)\n  .HasForeignKey(c => c.CliniqueFK);",expl:"HasOne → WithMany → HasForeignKey : le trio standard pour 1-to-many."},
+        {n:18,pts:1,q:"Pre-convention : toutes les propriétés string → max 50 caractères.",ans:"configurationBuilder.Properties<string>().HaveMaxLength(50);",expl:"Dans ConfigureConventions(ModelConfigurationBuilder)."},
+        {n:19,pts:0.5,q:"Créer la migration 'Migration1'.",ans:"Add-Migration Migration1",expl:"Commande Package Manager Console."},
+        {n:20,pts:0.5,q:"Erreur 'No DbContext found in assembly' → solution ?",ans:"Changer le Default Project (PMC) vers le projet Infrastructure",expl:"EF Core cherche le DbContext dans le projet sélectionné comme Default Project dans PMC."},
+        {n:21,pts:1,q:"LINQ : grouper les Rooms par Prix.",ans:"return Rooms.GroupBy(c => c.Prix);",expl:"GroupBy(clé) regroupe les éléments par la clé spécifiée."}
+      ]}
+    ]
+  },
+  {
+    id:"proto", label:"Examen Prototype", date:"Prototype",
+    context:"Application STEG — Facturation électricité (Abonne, Compteur, Periode, Facture, TypeCompteur enum)",
+    sections:[
+      {title:"Partie I — QCM (8 pts)", type:"qcm", questions:[
+        {n:1,pts:0.5,q:".NET Core n'est PAS disponible sur :",o:["Linux","Windows","macOS","Android"],ans:"d) Android",expl:".NET Core cible Linux, Windows, macOS. Android est supporté via Xamarin/MAUI."},
+        {n:2,pts:0.5,q:"Quel type n'existe PAS en .NET ?",o:["class","struct","delegate","Pointeur"],ans:"c) Pointeur",expl:"Les pointeurs ne sont pas un type de premier rang en C# géré."},
+        {n:3,pts:0.5,q:"Pour importer le namespace 'Security' en C# :",o:["import Security;","#include Security","using Security;","namespace Security;"],ans:"c) using Security;",expl:"C# utilise 'using' pour les namespaces, pas 'import'."},
+        {n:4,pts:0.5,q:"Visibilité par défaut en C# :",o:["public","private","protected","internal"],ans:"d) internal",expl:"Sans modificateur = internal (même assembly)."},
+        {n:5,pts:0.5,q:"Instancier G<int,int> : var g = ___",o:["new G();","new G<int>();","new G<int,int>();","new G[int,int]();"],ans:"c) new G<int,int>()",expl:"2 paramètres de type → 2 types entre les chevrons."},
+        {n:6,pts:0.5,q:"Méthode d'extension M sur string retournant IEnumerable<int> :",o:["public int M(string s)","public static IEnumerable<int> M(this string s)","public IEnumerable<int> M(string s)","static M(IEnumerable<int> this string)"],ans:"b) public static IEnumerable<int> M(this string s)",expl:"Extension = static, premier param = this NomType."},
+        {n:7,pts:0.5,q:"LINQ : source.______(e => \"s\" + e) pour préfixer chaque élément par 's' ?",o:["Where","GroupBy","Select","OrderBy"],ans:"c) Select",expl:"Select projette/transforme chaque élément."},
+        {n:8,pts:0.5,q:"Package NuGet de base pour EF Core ?",o:["System.Data","Microsoft.EntityFrameworkCore","EntityFramework","Dapper"],ans:"b) Microsoft.EntityFrameworkCore",expl:"Le package principal est Microsoft.EntityFrameworkCore."},
+        {n:9,pts:0.5,q:"Classe DbContext : class AppContext : ___ ?",o:["DbContext","Entity","DbSet","Repository"],ans:"a) DbContext",expl:"Toujours hériter de DbContext pour créer son contexte EF Core."},
+        {n:10,pts:0.5,q:"Persister les données :",o:["context.Commit()","context.Push()","context.SaveChanges()","context.Flush()"],ans:"c) context.SaveChanges()",expl:"SaveChanges() est la méthode pour persister."}
+      ]},
+      {title:"Partie II — Questions ouvertes (12 pts)", type:"open", questions:[
+        {n:13,pts:0.5,q:"Annotation pour clé primaire string 'Reference' ?",ans:"[Key]\npublic string Reference { get; set; }",expl:"[Key] est obligatoire car la convention ne s'applique pas aux string."},
+        {n:14,pts:0.5,q:"Annotation pour ConsommationKWH devant être positif.",ans:"[Range(0, int.MaxValue, ErrorMessage=\"ConsommationKWH doit être un nombre positif\")]",expl:"int.MaxValue comme borne max pour 'tout positif'."},
+        {n:15,pts:0.5,q:"Annotation pour afficher DateTime uniquement comme date.",ans:"[DataType(DataType.Date)]",expl:"[DataType(DataType.Date)] masque la partie heure."},
+        {n:16,pts:0.5,q:"Nom de table personnalisé 'Abonnes' pour DbSet<Abonne> via Fluent API.",ans:"modelBuilder.Entity<Abonne>().ToTable(\"Abonnes\");",expl:"ToTable() dans OnModelCreating."},
+        {n:17,pts:0.5,q:"MaxLength 150 pour la propriété CIN de Abonne (Fluent API).",ans:"modelBuilder.Entity<Abonne>().Property(e => e.CIN).HasMaxLength(150);",expl:".Property(lambda) pour cibler une propriété spécifique."},
+        {n:18,pts:2,q:"Classe de configuration Fluent API pour Facture (FK CompteurKey, FK PeriodeKey, clé composite).",ans:"public class FactureConfig : IEntityTypeConfiguration<Facture>\n{\n    public void Configure(EntityTypeBuilder<Facture> builder)\n    {\n        builder.HasKey(e => new { e.CompteurKey, e.PeriodeKey, e.Date });\n        builder.HasOne(f => f.Compteur)\n            .WithMany(c => c.Factures)\n            .HasForeignKey(f => f.CompteurKey);\n        builder.HasOne(f => f.Periode)\n            .WithMany(p => p.Factures)\n            .HasForeignKey(f => f.PeriodeKey);\n    }\n}",expl:"HasKey avec type anonyme + deux relations HasOne/WithMany/HasForeignKey."},
+        {n:19,pts:0.5,q:"Clé composite (CompteurKey, PeriodeKey, Date) en Fluent API.",ans:"modelBuilder.Entity<Facture>().HasKey(e => new { e.CompteurKey, e.PeriodeKey, e.Date });",expl:"HasKey(e => new {...}) pour clé composite."},
+        {n:20,pts:0.5,q:"Où placer les pre-conventions ?",ans:"Dans la méthode ConfigureConventions(ModelConfigurationBuilder configurationBuilder) du DbContext",expl:"Méthode dédiée, pas OnModelCreating ni OnConfiguring."},
+        {n:21,pts:0.5,q:"Dans la chaîne de connexion, à quelle position se trouve le nom de la base ?",ans:"Position (2) : Initial Catalog=NomBase ou Database=NomBase",expl:"Format typique : Server=...;Initial Catalog=MaBase;Integrated Security=True"},
+        {n:22,pts:0.5,q:"Appliquer la migration à la base de données.",ans:"Update-Database",expl:"Commande Package Manager Console."},
+        {n:23,pts:0.5,q:"Erreur de violation de clé étrangère → solution ?",ans:"S'assurer que l'entité référencée existe déjà en base avant d'insérer la dépendante.",expl:"Insérer dans l'ordre : d'abord les parents, puis les enfants."},
+        {n:24,pts:0.5,q:"Fix NullReferenceException lors de l'accès aux propriétés de navigation.",ans:"1. Activer UseLazyLoadingProxies() dans OnConfiguring\n2. Ajouter 'virtual' sur toutes les propriétés de navigation",expl:"Les deux étapes sont obligatoires pour le lazy loading."}
+      ]}
+    ]
+  }
+];
+
+// ═══════════════ CASES DATA ═══════════════
+const CASES = [
+  {
+    title:"Gestion de Véhicules Électriques (Examen 1)",
+    context:"Application de réservation : Vehicule (base), VehiculeElectrique et TrotinetteElectrique (sous-classes), Reservation (composite PK), Client.",
+    questions:[
+      {n:1,pts:1,q:"Écrire la classe VehiculeElectrique héritant de Vehicule, avec AutonomiKm.",ans:"public class VehiculeElectrique : Vehicule\n{\n    public int AutonomiKm { get; set; }\n}"},
+      {n:2,pts:1,q:"Écrire la classe TrotinetteElectrique héritant de Vehicule, avec NbPlaces.",ans:"public class TrotinetteElectrique : Vehicule\n{\n    public int NbPlaces { get; set; }\n}"},
+      {n:3,pts:0.5,q:"Écrire l'enum Statut pour une réservation.",ans:"public enum Statut { EnAttente, Confirmee, EnCours, Terminee, Annulee }"},
+      {n:4,pts:1.5,q:"Configurer en Fluent API les relations de Reservation vers Client et Vehicule.",ans:"modelBuilder.Entity<Reservation>()\n    .HasOne(r => r.Client)\n    .WithMany(c => c.Reservations)\n    .HasForeignKey(r => r.ClientFK);\nmodelBuilder.Entity<Reservation>()\n    .HasOne(r => r.Vehicule)\n    .WithMany(v => v.Reservations)\n    .HasForeignKey(r => r.VehiculeFK);"},
+      {n:5,pts:0.5,q:"Clé primaire composite (ClientFK, VehiculeFK, DateDebut) pour Reservation.",ans:"builder.HasKey(r => new { r.ClientFK, r.VehiculeFK, r.DateDebut });"},
+      {n:6,pts:0.5,q:"Corriger l'erreur lazy loading : 'public ICollection<Vehicule> Vehicules { get; set; }'",ans:"public virtual ICollection<Vehicule> Vehicules { get; set; }\n// Ajouter 'virtual' et activer UseLazyLoadingProxies()"}
+    ]
+  },
+  {
+    title:"Gestion de Cliniques (Examen 3)",
+    context:"Application cliniques : Clinique, Chambre (PK=NumeroChambre), Patient, Admission, TypeChambre enum.",
+    questions:[
+      {n:1,pts:0.5,q:"Propriété de navigation dans Clinique vers ses Chambres.",ans:"public ICollection<Chambre> Chambres { get; set; }"},
+      {n:2,pts:0.5,q:"Écrire l'enum TypeChambre.",ans:"public enum TypeChambre { Simple, Double }"},
+      {n:3,pts:2,q:"Annotations complètes pour la classe Chambre (PK, Prix avec display et range).",ans:"public class Chambre\n{\n    [Key]\n    public int NumeroChambre { get; set; }\n\n    public TypeChambre Type { get; set; }\n\n    [Display(Name = \"le prix de la chambre\")]\n    [Range(100, 500)]\n    public decimal Prix { get; set; }\n\n    public int CliniqueFK { get; set; }\n    public Clinique Clinique { get; set; }\n}"},
+      {n:4,pts:1,q:"Configurer la relation Chambre → Clinique en OnModelCreating.",ans:"modelBuilder.Entity<Chambre>()\n    .HasOne(c => c.Clinique)\n    .WithMany(cl => cl.Chambres)\n    .HasForeignKey(c => c.CliniqueFK);"},
+      {n:5,pts:1,q:"Classe de config Fluent API pour Chambre avec ToTable(\"Rooms\").",ans:"public class ChambreConfig : IEntityTypeConfiguration<Chambre>\n{\n    public void Configure(EntityTypeBuilder<Chambre> builder)\n    {\n        builder.ToTable(\"Rooms\");\n    }\n}"},
+      {n:6,pts:1,q:"Pre-convention : toutes les strings max 50 chars.",ans:"protected override void ConfigureConventions(\n    ModelConfigurationBuilder configurationBuilder)\n{\n    configurationBuilder.Properties<string>().HaveMaxLength(50);\n}"},
+      {n:7,pts:0.5,q:"LINQ : grouper les chambres par prix.",ans:"return Rooms.GroupBy(c => c.Prix);"}
+    ]
+  },
+  {
+    title:"Facturation STEG (Prototype)",
+    context:"Application de facturation d'électricité : Abonne (CIN, string PK=Reference), Compteur, Periode, Facture (PK composite).",
+    questions:[
+      {n:1,pts:0.5,q:"Annotation pour clé primaire string 'Reference' dans Abonne.",ans:"[Key]\npublic string Reference { get; set; }"},
+      {n:2,pts:0.5,q:"Annotation pour ConsommationKWH devant être positif.",ans:"[Range(0, int.MaxValue, ErrorMessage = \"ConsommationKWH doit être un nombre positif\")]\npublic decimal ConsommationKWH { get; set; }"},
+      {n:3,pts:0.5,q:"Annotation pour afficher une propriété DateTime comme date seulement.",ans:"[DataType(DataType.Date)]\npublic DateTime DateFacture { get; set; }"},
+      {n:4,pts:2,q:"Classe de configuration complète pour Facture (clé composite + 2 relations FK).",ans:"public class FactureConfig : IEntityTypeConfiguration<Facture>\n{\n    public void Configure(EntityTypeBuilder<Facture> builder)\n    {\n        builder.HasKey(e => new {\n            e.CompteurKey,\n            e.PeriodeKey,\n            e.Date\n        });\n        builder.HasOne(f => f.Compteur)\n            .WithMany(c => c.Factures)\n            .HasForeignKey(f => f.CompteurKey);\n        builder.HasOne(f => f.Periode)\n            .WithMany(p => p.Factures)\n            .HasForeignKey(f => f.PeriodeKey);\n    }\n}"},
+      {n:5,pts:0.5,q:"Nom de table 'Abonnes' pour Abonne via Fluent API.",ans:"modelBuilder.Entity<Abonne>().ToTable(\"Abonnes\");"},
+      {n:6,pts:0.5,q:"MaxLength 150 pour la propriété CIN (Fluent API).",ans:"modelBuilder.Entity<Abonne>()\n    .Property(e => e.CIN)\n    .HasMaxLength(150);"},
+      {n:7,pts:0.5,q:"Fix : NullReferenceException sur propriétés de navigation.",ans:"1. Activer UseLazyLoadingProxies() dans OnConfiguring\n2. Ajouter 'virtual' sur toutes les propriétés de navigation\n\nEx: public virtual ICollection<Facture> Factures { get; set; }"}
+    ]
+  }
+];
+
+// ═══════════════ EXAM BUILDER ═══════════════
+let examsBuilt = false;
+function buildExams() {
+  if (examsBuilt) return;
+  examsBuilt = true;
+  const container = document.getElementById('exams-container');
+  container.innerHTML = '';
+  EXAMS.forEach(ex => {
+    const card = document.createElement('div');
+    card.className = 'tp-part';
+    card.innerHTML = `
+      <div class="tp-head" onclick="toggleTP(this)">
+        <h3><div class="tp-num">📝</div>${ex.label} — ${ex.date}</h3>
+        <span>▶</span>
+      </div>
+      <div class="tp-body" style="padding:22px">
+        <div class="alert info" style="margin-bottom:16px"><strong>Contexte :</strong> ${ex.context}</div>
+        <button class="btn btn-o" style="font-size:12px;margin-bottom:16px" onclick="revealAllEx('${ex.id}', this)">👁 Afficher toutes les réponses</button>
+        <div id="ex-body-${ex.id}"></div>
+      </div>`;
+    container.appendChild(card);
+    const body = document.getElementById('ex-body-' + ex.id);
+    ex.sections.forEach(sec => {
+      const stitle = document.createElement('div');
+      stitle.className = 'slabel';
+      stitle.style.marginTop = '16px';
+      stitle.textContent = sec.title;
+      body.appendChild(stitle);
+      sec.questions.forEach(q => {
+        const eq = document.createElement('div');
+        eq.className = 'card';
+        eq.style.cssText = 'background:var(--card2);margin-bottom:10px;padding:14px';
+        if (sec.type === 'qcm') {
+          const correctIdx = 'abcd'.indexOf(q.ans[0].toLowerCase());
+          const optsHtml = (q.o || []).map((o, j) =>
+            `<div style="padding:5px 10px;border-radius:6px;margin-bottom:4px;font-size:13px;color:var(--muted);border:1px solid var(--border)" data-cidx="${j === correctIdx ? 1 : 0}" class="ex-opt-${ex.id}">${String.fromCharCode(97+j)}) ${o}</div>`
+          ).join('');
+          eq.innerHTML = `<div style="font-size:11px;color:var(--muted)">Q${q.n} · ${q.pts} pt${q.pts>1?'s':''}</div>
+            <div style="font-weight:600;margin:6px 0 10px;font-size:.9rem">${q.q}</div>
+            <div class="ex-opts-${ex.id}">${optsHtml}</div>
+            <button class="btn btn-o" style="font-size:11px;padding:4px 12px;margin-top:6px" onclick="toggleExAns(this)">▼ Réponse</button>
+            <div class="expl" style="display:none;margin-top:8px">
+              <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ ${q.ans}</div>
+              <div style="color:var(--muted);font-size:13px">${q.expl}</div>
+            </div>`;
+        } else {
+          eq.innerHTML = `<div style="font-size:11px;color:var(--muted)">Q${q.n} · ${q.pts} pt${q.pts>1?'s':''}</div>
+            <div style="font-weight:600;margin:6px 0 10px;font-size:.9rem">${q.q}</div>
+            <button class="btn btn-o" style="font-size:11px;padding:4px 12px" onclick="toggleExAns(this)">▼ Réponse</button>
+            <div class="expl" style="display:none;margin-top:8px">
+              <pre style="background:#070b12;border:1px solid var(--green);border-radius:8px;padding:12px;font-size:12px;white-space:pre-wrap;color:var(--green)">${q.ans}</pre>
+              ${q.expl ? `<div style="color:var(--muted);font-size:13px;margin-top:6px">${q.expl}</div>` : ''}
+            </div>`;
+        }
+        body.appendChild(eq);
+      });
+    });
+  });
+}
+
+function toggleExAns(btn) {
+  const box = btn.nextElementSibling;
+  const shown = box.style.display !== 'none';
+  box.style.display = shown ? 'none' : 'block';
+  // highlight correct QCM option
+  if (!shown) {
+    const parent = btn.closest('.card');
+    parent.querySelectorAll('[data-cidx="1"]').forEach(el => {
+      el.style.background = 'rgba(16,185,129,.15)';
+      el.style.borderColor = 'var(--green)';
+      el.style.color = 'var(--green)';
+    });
+  }
+  btn.textContent = shown ? '▼ Réponse' : '▲ Masquer';
+}
+
+function revealAllEx(exId, btn) {
+  const body = document.getElementById('ex-body-' + exId);
+  body.querySelectorAll('.card').forEach(card => {
+    const box = card.querySelector('.expl');
+    const toggle = card.querySelector('.btn');
+    if (box && box.style.display === 'none') {
+      box.style.display = 'block';
+      card.querySelectorAll('[data-cidx="1"]').forEach(el => {
+        el.style.background = 'rgba(16,185,129,.15)';
+        el.style.borderColor = 'var(--green)';
+        el.style.color = 'var(--green)';
+      });
+      if (toggle) toggle.textContent = '▲ Masquer';
+    }
+  });
+  btn.textContent = '✅ Tout affiché';
+  btn.disabled = true;
+}
+
+// ═══════════════ CASES BUILDER ═══════════════
+let casesBuilt = false;
+function buildCases() {
+  if (casesBuilt) return;
+  casesBuilt = true;
+  const container = document.getElementById('cases-container');
+  container.innerHTML = '';
+  CASES.forEach((c, ci) => {
+    const card = document.createElement('div');
+    card.className = 'tp-part';
+    card.innerHTML = `
+      <div class="tp-head" onclick="toggleTP(this)">
+        <h3><div class="tp-num">${ci+1}</div>${c.title}</h3>
+        <span>▶</span>
+      </div>
+      <div class="tp-body" style="padding:22px">
+        <div class="alert info" style="margin-bottom:16px">${c.context}</div>
+        <div id="case-body-${ci}"></div>
+      </div>`;
+    container.appendChild(card);
+    const body = document.getElementById('case-body-' + ci);
+    c.questions.forEach(q => {
+      const cq = document.createElement('div');
+      cq.className = 'card';
+      cq.style.cssText = 'background:var(--card2);margin-bottom:10px;padding:14px';
+      cq.innerHTML = `<div style="font-size:11px;color:var(--muted)">Q${q.n} · ${q.pts} pt${q.pts>1?'s':''}</div>
+        <div style="font-weight:600;margin:6px 0 10px;font-size:.9rem">${q.q}</div>
+        <button class="btn btn-o" style="font-size:11px;padding:4px 12px" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.nextElementSibling.style.display!=='none'?'▲ Masquer':'▼ Réponse'">▼ Réponse</button>
+        <div style="display:none;margin-top:8px">
+          <pre style="background:#070b12;border:1px solid var(--green);border-radius:8px;padding:12px;font-size:12px;white-space:pre-wrap;color:var(--green)">${q.ans}</pre>
+        </div>`;
+      body.appendChild(cq);
+    });
+  });
+}
+</script>
+
+<div class="tab" id="tab-appendix">
+<div class="slabel">Appendix - Source Extras</div>
+
+<div class="card">
+  <h2>🖥️ Visual Studio 2022</h2>
+  <p><strong>IDE principal pour .NET</strong> sur Windows.</p>
+  <div class="grid g3">
+    <div><span class="pill b">ASP.NET et développement web</span> MVC, Razor, API</div>
+    <div><span class="pill b">Développement .NET Desktop</span> WPF, WinForms</div>
+    <div><span class="pill b">Stockage et traitement des données</span> EF Core, SQL Server</div>
+  </div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h2>🏷️ Namespaces &amp; Propriétés</h2>
+    <pre>using System;
+using System.Collections.Generic;
+using Security;
+
+public int Age { get; set; }
+public int F { get; }
+
+private int _val;
+public int Val
+{
+    get => _val;
+    set => _val = value > 0 ? value : 0;
+}</pre>
+    <div class="alert warn">Sans modificateur, un type est <code>internal</code> par défaut.</div>
+  </div>
+  <div class="card">
+    <h2>🧬 Génériques, Délégués, Extension</h2>
+    <pre>public class GenericBox&lt;T&gt;
+{
+    public T Value { get; set; }
+}
+
+delegate int MonDelegate(int x);
+Action&lt;string&gt; log = Console.WriteLine;
+Func&lt;int, double&gt; moyenne = x => x / 2.0;
+
+public static class StringExtensions
+{
+    public static IEnumerable&lt;int&gt; M(this string s)
+        => s.Select(c => (int)c);
+}</pre>
+    <div class="alert info">Action = pas de retour. Func = retour via le dernier type générique.</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔍 LINQ &amp; Collections</h2>
+  <div class="grid g2">
+    <div>
+      <h3>Syntaxe requête</h3>
+      <pre>var vols = from f in Flights
+           where f.Destination == "Paris"
+           orderby f.FlightDate
+           select f;</pre>
+    </div>
+    <div>
+      <h3>Syntaxe méthode</h3>
+      <pre>var vols = Flights
+    .Where(f => f.Destination == "Paris")
+    .OrderBy(f => f.FlightDate)
+    .Select(f => f);</pre>
+    </div>
+  </div>
+  <table>
+    <tr><th>Méthode</th><th>Usage</th></tr>
+    <tr><td><code>Where</code></td><td>Filtrer</td></tr>
+    <tr><td><code>Select</code></td><td>Projeter</td></tr>
+    <tr><td><code>OrderBy</code></td><td>Trier croissant</td></tr>
+    <tr><td><code>OrderByDescending</code></td><td>Trier décroissant</td></tr>
+    <tr><td><code>GroupBy</code></td><td>Regrouper</td></tr>
+    <tr><td><code>OfType&lt;T&gt;</code></td><td>Filtrer par type</td></tr>
+    <tr><td><code>FirstOrDefault</code></td><td>Premier ou valeur par défaut</td></tr>
+    <tr><td><code>Average / Sum / Max / Min</code></td><td>Agrégations</td></tr>
+  </table>
+  <pre>var seniorTravellers = flight.Passengers
+    .OfType&lt;Traveller&gt;()
+    .OrderBy(p => p.BirthDate)
+    .Take(3)
+    .Select(p => p.Nationality);</pre>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h2>🗄️ EF Core Essentials</h2>
+    <pre>class AppContext : DbContext
+{
+    public DbSet&lt;Etudiant&gt; Etudiants { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder o)
+    {
+        o.UseSqlServer("connection string");
+        o.UseLazyLoadingProxies();
+    }
+}</pre>
+    <h3>CRUD</h3>
+    <pre>context.Etudiants.Add(new Etudiant { ... });
+context.SaveChanges();
+var all = context.Etudiants.ToList();
+var item = context.Etudiants.Find(id);
+context.Etudiants.Remove(item);
+context.SaveChanges();</pre>
+  </div>
+  <div class="card">
+    <h2>🏷️ Annotations, Fluent API, Migration</h2>
+    <table>
+      <tr><th>Annotation</th><th>Usage</th></tr>
+      <tr><td><code>[Key]</code></td><td>Clé primaire non conventionnelle</td></tr>
+      <tr><td><code>[Required]</code></td><td>Champ obligatoire</td></tr>
+      <tr><td><code>[ForeignKey]</code></td><td>Clé étrangère</td></tr>
+      <tr><td><code>[Table]</code></td><td>Nom de table</td></tr>
+      <tr><td><code>[Range]</code></td><td>Plage numérique</td></tr>
+      <tr><td><code>[MaxLength]</code></td><td>Longueur max</td></tr>
+    </table>
+    <pre>modelBuilder.Entity&lt;Chambre&gt;()
+    .HasOne(c => c.Clinique)
+    .WithMany(cl => cl.Chambres)
+    .HasForeignKey(c => c.CliniqueFK);
+
+Add-Migration NomMig
+Update-Database
+Remove-Migration</pre>
+    <div class="alert warn">Pour rollback, utilisez <code>Update-Database NomMigrationPrécédente</code>.</div>
+  </div>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h2>🌳 Héritage EF Core</h2>
+    <ul>
+      <li><strong>TPH</strong> = une table, colonne discriminante, stratégie par défaut.</li>
+      <li><strong>TPT</strong> = une table par type, avec <code>[Table]</code> sur les classes filles.</li>
+      <li><strong>TPC</strong> = une table par classe concrète.</li>
+    </ul>
+    <pre>[Table("VehiculesElectriques")]
+public class VehiculeElectrique : Vehicule { }</pre>
+  </div>
+  <div class="card">
+    <h2>⚙️ Pre-Conventions &amp; Lazy Loading</h2>
+    <pre>protected override void ConfigureConventions(ModelConfigurationBuilder cfg)
+{
+    cfg.Properties&lt;string&gt;().HaveMaxLength(100);
+}
+
+o.UseLazyLoadingProxies();
+// toutes les nav properties doivent être virtual</pre>
+    <div class="alert danger">Sans <code>virtual</code> + proxies, l'accès aux nav properties peut lever une <code>NullReferenceException</code>.</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>📚 Revision Source Pack</h2>
+  <div class="grid g2">
+    <div>
+      <h3>.NET / Architecture</h3>
+      <ul>
+        <li>.NET Core est multiplateforme; .NET Framework est Windows-only.</li>
+        <li>N-tiers = architecture physique; N-couches = architecture logique.</li>
+        <li>Architecture oignon, MVC, séparation UI / infrastructure / domaine.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>C# / Patterns / MVC</h3>
+      <ul>
+        <li>OOP: classes, héritage, polymorphisme, encapsulation, génériques.</li>
+        <li>Design patterns: Repository, UnitOfWork, Service.</li>
+        <li>MVC: contrôleurs, vues Razor, validation, anti-forgery.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔗 EF Visualizer Legacy</h2>
+  <table>
+    <tr><th>Relation</th><th>Exemple</th></tr>
+    <tr><td>1-1</td><td><code>User</code> ↔ <code>Profile</code></td></tr>
+    <tr><td>1-*</td><td><code>Plane</code> → <code>Flights</code></td></tr>
+    <tr><td>*-1</td><td><code>Flight</code> → <code>Plane</code></td></tr>
+    <tr><td>*-*</td><td><code>Student</code> ↔ <code>Course</code></td></tr>
+  </table>
+  <pre>builder.HasOne(a => a.Profile)
+       .WithOne(b => b.User)
+       .HasForeignKey&lt;Profile&gt;(b => b.UserId);</pre>
+</div>
+</div>
+
+</body>
+</html>
