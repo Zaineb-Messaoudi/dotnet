@@ -209,12 +209,15 @@ tr:hover td{background:var(--hover)}
     <input id="nav-search" type="search" placeholder="Rechercher une section..." oninput="filterNav(this.value)" aria-label="Rechercher une section">
   </div>
   <div class="nav-jump">
-    <button onclick="show('home')">Accueil</button>
-    <button onclick="show('ch1')">Ch1</button>
-    <button onclick="show('ch2')">Ch2</button>
-    <button onclick="show('ch3')">Ch3</button>
-    <button onclick="show('revision')">Révision</button>
-    <button onclick="show('appendix')">Appendix</button>
+    <button onclick="show('home')">🏠 Accueil</button>
+    <button onclick="show('ch1')">📘 Ch1</button>
+    <button onclick="show('ch2')">💜 Ch2</button>
+    <button onclick="show('ch3')">🗄️ Ch3</button>
+    <button onclick="show('tp')">✈️ TP</button>
+    <button onclick="show('quiz')">❓ Quiz</button>
+    <button onclick="show('hot')">🔥 Hot</button>
+    <button onclick="show('revision')">🔄 Rev</button>
+    <button onclick="show('appendix')">📎 Ref</button>
   </div>
   <button onclick="show('home')" class="active" id="tn-home">🏠 Accueil</button>
   <button onclick="show('ch1')" id="tn-ch1">📘 Ch1 .NET</button>
@@ -554,6 +557,122 @@ Func&lt;<span class="kw">int</span>&gt; countAll = CountAll;</code></pre>
     <div class="alert info"><code>virtual</code> + <code>override</code> = comportement déterminé à l'exécution selon le type réel.</div>
   </div>
 </div>
+<div class="slabel">OOP Avancé — abstract, interface, sealed, static, struct</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🔵 abstract vs virtual vs interface</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mot-clé</th><th>Corps ?</th><th>Override obligatoire ?</th><th>Instanciable ?</th></tr>
+      <tr><td><code>virtual</code></td><td>✅ Oui</td><td>❌ Optionnel</td><td>✅ Oui</td></tr>
+      <tr><td><code>abstract</code> (méthode)</td><td>❌ Non</td><td>✅ Obligatoire</td><td>❌ Classe abstraite</td></tr>
+      <tr><td><code>interface</code></td><td>❌ Non*</td><td>✅ Obligatoire</td><td>❌ Non</td></tr>
+    </table></div>
+    <pre><code><span class="cm">// abstract class : peut avoir des membres concrets ET abstraits</span>
+<span class="kw">public abstract class</span> <span class="cl">Animal</span>
+{
+    <span class="kw">public abstract void</span> Speak(); <span class="cm">// pas de corps, DOIT être redéfini</span>
+    <span class="kw">public void</span> Breathe() => Console.WriteLine(<span class="st">"breathing..."</span>); <span class="cm">// concret</span>
+}
+
+<span class="cm">// interface : contrat pur (C# 8+ permet défaut, mais rare en cours)</span>
+<span class="kw">public interface</span> <span class="cl">IFlyable</span>
+{
+    <span class="kw">void</span> Fly(); <span class="cm">// pas de corps, doit être implémenté</span>
+}
+
+<span class="cm">// Classe peut hériter 1 classe + plusieurs interfaces</span>
+<span class="kw">public class</span> <span class="cl">Eagle</span> : <span class="cl">Animal</span>, <span class="cl">IFlyable</span>
+{
+    <span class="kw">public override void</span> Speak() => Console.WriteLine(<span class="st">"Screech!"</span>);
+    <span class="kw">public void</span> Fly() => Console.WriteLine(<span class="st">"Soaring..."</span>);
+}</code></pre>
+    <div class="alert warn">⚠️ <strong>Examen piège :</strong> <code>abstract</code> ≠ <code>virtual</code>. Abstract = pas de corps + override obligatoire. Virtual = a un corps + override optionnel.</div>
+  </div>
+  <div class="card">
+    <h2>🔒 sealed — Bloquer l'héritage</h2>
+    <pre><code><span class="cm">// sealed class : personne ne peut hériter de cette classe</span>
+<span class="kw">public sealed class</span> <span class="cl">FinalService</span>
+{
+    <span class="kw">public void</span> DoWork() { }
+}
+
+<span class="cm">// sealed method : bloque l'override dans les sous-sous-classes</span>
+<span class="kw">public class</span> <span class="cl">Base</span>
+{
+    <span class="kw">public virtual void</span> Method() { }
+}
+<span class="kw">public class</span> <span class="cl">Middle</span> : <span class="cl">Base</span>
+{
+    <span class="kw">public sealed override void</span> Method() { } <span class="cm">// plus d'override après</span>
+}
+<span class="cm">// public class Child : Middle { override Method() {} } → ERREUR</span></code></pre>
+    <div class="alert info">Utilisé dans les frameworks pour les classes finales (ex: <code>String</code> en .NET est <code>sealed</code>).</div>
+    <h3>static — Classes et méthodes statiques</h3>
+    <pre><code><span class="cm">// Classe statique : que des membres statiques, pas d'instance</span>
+<span class="kw">public static class</span> <span class="cl">MathHelper</span>
+{
+    <span class="kw">public static double</span> Square(<span class="kw">double</span> x) => x * x;
+}
+
+<span class="cm">// Utilisation : via le nom de la classe, PAS new()</span>
+<span class="kw">var</span> r = MathHelper.Square(<span class="nu">5</span>); <span class="cm">// = 25</span>
+
+<span class="cm">// Classe TestData du TP (données statiques)</span>
+<span class="kw">public static class</span> <span class="cl">TestData</span>
+{
+    <span class="kw">public static</span> Plane BoingPlane = <span class="kw">new</span> Plane
+        { PlaneType = PlaneType.Boing, Capacity = <span class="nu">150</span> };
+    <span class="kw">public static</span> List&lt;Flight&gt; listFlights = <span class="kw">new</span> List&lt;Flight&gt; { ... };
+}</code></pre>
+  </div>
+</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🏗️ struct vs class — Valeur vs Référence</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>class</th><th>struct</th></tr>
+      <tr><td>Type</td><td>Référence (heap)</td><td>Valeur (stack)</td></tr>
+      <tr><td>Héritage</td><td>✅ Oui</td><td>❌ Non</td></tr>
+      <tr><td>Nullable</td><td>✅ peut être null</td><td>❌ non (sauf <code>Nullable&lt;T&gt;</code>)</td></tr>
+      <tr><td>Copie</td><td>Copie la référence</td><td>Copie la valeur entière</td></tr>
+      <tr><td>Usage typique</td><td>Entités, services</td><td>Point, Color, DateTime</td></tr>
+    </table></div>
+    <pre><code><span class="kw">public struct</span> <span class="cl">Point</span>
+{
+    <span class="kw">public int</span> X { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> Y { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+Point p1 = <span class="kw">new</span> Point { X = <span class="nu">1</span>, Y = <span class="nu">2</span> };
+Point p2 = p1; <span class="cm">// copie complète, pas une référence</span>
+p2.X = <span class="nu">99</span>;     <span class="cm">// p1.X reste 1 !</span></code></pre>
+    <div class="alert danger">❌ <code>C# ne supporte pas l'héritage entre struct</code>. Erreur fréquente à l'examen.</div>
+  </div>
+  <div class="card">
+    <h2>📌 Initialiseurs d'objets &amp; Constructeurs</h2>
+    <pre><code><span class="cm">// Constructeur paramétré</span>
+<span class="kw">public class</span> <span class="cl">Plane</span>
+{
+    <span class="kw">public</span> <span class="cl">Plane</span>(PlaneType pt, <span class="kw">int</span> capacity, DateTime date)
+    {
+        PlaneType = pt; Capacity = capacity; ManufactureDate = date;
+    }
+}
+Plane p = <span class="kw">new</span> Plane(PlaneType.Boing, <span class="nu">300</span>, DateTime.Now);
+
+<span class="cm">// Initialiseur d'objet (plus flexible — pas besoin de constructeur)</span>
+Plane p2 = <span class="kw">new</span> Plane
+{
+    PlaneType = PlaneType.Airbus,
+    Capacity = <span class="nu">150</span>,
+    ManufactureDate = <span class="kw">new</span> DateTime(<span class="nu">2015</span>, <span class="nu">02</span>, <span class="nu">03</span>)
+};
+
+<span class="cm">// Avantage : on initialise uniquement les props voulues</span>
+<span class="cm">// Inconvénient : ne valide pas les dépendances entre champs</span></code></pre>
+    <div class="alert success">✅ Les initialiseurs d'objets sont plus simples que les constructeurs paramétrés pour les entités EF Core.</div>
+  </div>
+</div>
 <div class="slabel">LINQ — Language Integrated Query</div>
 <div class="card">
   <h2>🔍 LINQ — Syntaxes et Méthodes clés</h2>
@@ -641,7 +760,60 @@ Func&lt;<span class="kw">int</span>&gt; countAll = CountAll;</code></pre>
 </div>
 <div class="grid g2">
   <div class="card">
-    <h2>🗄️ DbContext — Classe principale</h2>
+    <h2>🗄️ AMContext — OnConfiguring vs Constructeur (DI)</h2>
+    <pre><code><span class="cm">// ① Pour Console app : OnConfiguring (hardcodé)</span>
+<span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
+{
+    <span class="kw">protected override void</span> OnConfiguring(
+        DbContextOptionsBuilder o)
+    {
+        o.UseLazyLoadingProxies()
+         .UseSqlServer(<span class="st">@"Data Source=(localdb)\mssqllocaldb;
+           Initial Catalog=AirportManagementDB;
+           Integrated Security=true"</span>);
+        <span class="kw">base</span>.OnConfiguring(o);
+    }
+}
+
+<span class="cm">// ② Pour ASP.NET MVC : constructeur avec DbContextOptions (DI)</span>
+<span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
+{
+    <span class="cm">// Ce constructeur OBLIGATOIRE pour AddDbContext() dans Program.cs</span>
+    <span class="kw">public</span> <span class="cl">AMContext</span>(DbContextOptions&lt;<span class="cl">AMContext</span>&gt; options)
+        : <span class="kw">base</span>(options) { }
+
+    <span class="kw">protected override void</span> OnConfiguring(
+        DbContextOptionsBuilder o)
+    {
+        <span class="cm">// Ne pas appeler UseSqlServer ici si configuré via DI</span>
+        <span class="kw">if</span> (!o.IsConfigured) o.UseLazyLoadingProxies();
+        <span class="kw">base</span>.OnConfiguring(o);
+    }
+}
+
+<span class="cm">// Program.cs côté ASP.NET :</span>
+builder.Services.AddDbContext&lt;<span class="cl">AMContext</span>&gt;(o =>
+    o.UseSqlServer(connectionString)
+     .UseLazyLoadingProxies());</code></pre>
+    <div class="alert warn">⚠️ Le constructeur <code>AMContext(DbContextOptions)</code> est <strong>obligatoire</strong> pour l'injection dans ASP.NET. Sans lui → erreur au démarrage de l'app.</div>
+  </div>
+  <div class="card">
+    <h2>🗑️ DeleteBehavior — Comportement de suppression</h2>
+    <pre><code><span class="cm">// Configurer via Fluent API dans FlightConfiguration :</span>
+builder.HasOne(f => f.Plane)
+       .WithMany(p => p.Flights)
+       .HasForeignKey(f => f.PlaneId)
+       .OnDelete(DeleteBehavior.Cascade); <span class="cm">// ou Restrict/SetNull</span></code></pre>
+    <div class="tbl-wrap" style="margin-top:10px"><table>
+      <tr><th>Comportement</th><th>Effet quand le parent est supprimé</th></tr>
+      <tr><td><code>Cascade</code></td><td>Les enfants sont aussi supprimés (défaut pour FK requises)</td></tr>
+      <tr><td><code>Restrict</code></td><td>Exception levée si des enfants existent</td></tr>
+      <tr><td><code>SetNull</code></td><td>La FK des enfants est mise à NULL</td></tr>
+      <tr><td><code>NoAction</code></td><td>Aucune action (géré manuellement)</td></tr>
+    </table></div>
+    <div class="alert info">Supprimer un <code>Plane</code> avec <code>Cascade</code> supprime aussi tous ses <code>Flights</code> automatiquement.</div>
+  </div>
+</div>
     <pre><code><span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
 {
     <span class="cm">// DbSet = table en base de données</span>
@@ -1809,6 +1981,161 @@ builder.Services.AddSingleton(
     </div>
   </div>
 </div>
+
+<!-- PARTIE 7c - PlaneController + Edit/Delete -->
+<div class="tp-part">
+  <div class="tp-head" onclick="toggleTP(this)">
+    <h3><div class="tp-num" style="background:linear-gradient(135deg,var(--orange),var(--yellow))">7c</div>Partie 7c — PlaneController, Edit, Delete &amp; Layout</h3>
+    <span>▶</span>
+  </div>
+  <div class="tp-body">
+    <div class="alert warn">⚠️ Sections souvent absentes des notes mais présentes dans le TP PDF : PlaneController complet, vues Edit/Delete pour Flight, modification du _Layout.</div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>PlaneController complet</h3>
+        <pre><code><span class="kw">public class</span> <span class="cl">PlaneController</span> : Controller
+{
+    <span class="kw">private readonly</span> <span class="cl">IServicePlane</span> _planeService;
+
+    <span class="kw">public</span> <span class="cl">PlaneController</span>(<span class="cl">IServicePlane</span> planeService)
+    {
+        _planeService = planeService;
+    }
+
+    <span class="cm">// GET: PlaneController/Details/5</span>
+    <span class="kw">public</span> ActionResult Details(<span class="kw">int</span> id)
+    {
+        <span class="kw">return</span> View(_planeService.GetById(id));
+    }
+
+    <span class="cm">// GET: PlaneController/Create</span>
+    <span class="kw">public</span> ActionResult Create()
+    {
+        <span class="kw">return</span> View();
+    }
+
+    <span class="cm">// POST: PlaneController/Create</span>
+    [HttpPost][ValidateAntiForgeryToken]
+    <span class="kw">public</span> ActionResult Create(<span class="cl">Plane</span> plane)
+    {
+        <span class="kw">try</span> {
+            _planeService.Add(plane);
+            _planeService.Commit();
+            <span class="kw">return</span> RedirectToAction(<span class="kw">nameof</span>(Index));
+        } <span class="kw">catch</span> { <span class="kw">return</span> View(); }
+    }
+}</code></pre>
+        <h3 style="margin-top:14px">Vue Create pour Plane (sélection enum)</h3>
+        <pre><code><span class="cm">&lt;!-- Dans Create.cshtml pour Plane --&gt;</span>
+&lt;div class="form-group"&gt;
+  &lt;label asp-for="PlaneType"&gt;&lt;/label&gt;
+  &lt;select asp-for="PlaneType" class="form-control"
+     asp-items="Html.GetEnumSelectList&lt;PlaneType&gt;()"&gt;
+  &lt;/select&gt;
+  &lt;span asp-validation-for="PlaneType"
+        class="text-danger"&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class="form-group"&gt;
+  &lt;label asp-for="ManufactureDate"&gt;&lt;/label&gt;
+  &lt;input asp-for="ManufactureDate" class="form-control" /&gt;
+&lt;/div&gt;
+&lt;div class="form-group"&gt;
+  &lt;label asp-for="Capacity"&gt;&lt;/label&gt;
+  &lt;input asp-for="Capacity" class="form-control" /&gt;
+  &lt;span asp-validation-for="Capacity"
+        class="text-danger"&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;input type="submit" value="Create" class="btn btn-primary" /&gt;</code></pre>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Vue Delete (Flight)</h3>
+          <pre><code><span class="cm">// GET : afficher confirmation</span>
+<span class="kw">public</span> ActionResult Delete(<span class="kw">int</span> id)
+    => View(_flightService.GetById(id));
+
+<span class="cm">// POST : supprimer</span>
+[HttpPost][ValidateAntiForgeryToken]
+<span class="kw">public</span> ActionResult Delete(<span class="kw">int</span> id, Flight f)
+{
+    <span class="kw">try</span> {
+        <span class="kw">var</span> flight = _flightService.GetById(id);
+        _flightService.Delete(flight);
+        _flightService.Commit();
+        <span class="kw">return</span> RedirectToAction(<span class="kw">nameof</span>(Index));
+    } <span class="kw">catch</span> { <span class="kw">return</span> View(); }
+}
+
+<span class="cm">&lt;!-- Delete.cshtml --&gt;</span>
+&lt;h3&gt;Supprimer ce vol ?&lt;/h3&gt;
+&lt;p&gt;@Model.Destination — @Model.FlightDate&lt;/p&gt;
+&lt;form asp-action="Delete"&gt;
+  &lt;input type="hidden" asp-for="FlightId" /&gt;
+  &lt;input type="submit" value="Supprimer"
+         class="btn btn-danger" /&gt;
+  &lt;a asp-action="Index" class="btn btn-secondary"&gt;Annuler&lt;/a&gt;
+&lt;/form&gt;</code></pre>
+        </div>
+        <div class="card">
+          <h3>Vue Edit (Flight)</h3>
+          <pre><code><span class="cm">// GET</span>
+<span class="kw">public</span> ActionResult Edit(<span class="kw">int</span> id)
+{
+    ViewBag.Planes = <span class="kw">new</span> SelectList(
+        _planeService.GetAll(), <span class="st">"PlaneId"</span>, <span class="st">"Information"</span>);
+    <span class="kw">return</span> View(_flightService.GetById(id));
+}
+
+<span class="cm">// POST</span>
+[HttpPost][ValidateAntiForgeryToken]
+<span class="kw">public</span> ActionResult Edit(<span class="kw">int</span> id, Flight flight)
+{
+    <span class="kw">try</span> {
+        _flightService.Update(flight);
+        _flightService.Commit();
+        <span class="kw">return</span> RedirectToAction(<span class="kw">nameof</span>(Index));
+    } <span class="kw">catch</span> { <span class="kw">return</span> View(); }
+}
+
+<span class="cm">&lt;!-- Edit.cshtml (similaire Create mais avec FlightId) --&gt;</span>
+&lt;form asp-action="Edit"&gt;
+  &lt;input type="hidden" asp-for="FlightId" /&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label asp-for="Destination"&gt;&lt;/label&gt;
+    &lt;input asp-for="Destination" class="form-control" /&gt;
+  &lt;/div&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label asp-for="PlaneId"&gt;&lt;/label&gt;
+    &lt;select asp-for="PlaneId"
+            asp-items="ViewBag.Planes"
+            class="form-control"&gt;&lt;/select&gt;
+  &lt;/div&gt;
+  &lt;input type="submit" value="Sauvegarder"
+         class="btn btn-primary" /&gt;
+&lt;/form&gt;</code></pre>
+        </div>
+        <div class="card">
+          <h3>_Layout.cshtml — Ajouter lien Flight</h3>
+          <pre><code><span class="cm">&lt;!-- Dans _Layout.cshtml, ajouter dans &lt;ul class="navbar-nav"&gt; --&gt;</span>
+&lt;li class="nav-item"&gt;
+  &lt;a class="nav-link text-dark"
+     asp-area=""
+     asp-controller="Flight"
+     asp-action="Index"&gt;Flights&lt;/a&gt;
+&lt;/li&gt;
+&lt;li class="nav-item"&gt;
+  &lt;a class="nav-link text-dark"
+     asp-area=""
+     asp-controller="Plane"
+     asp-action="Create"&gt;Add Plane&lt;/a&gt;
+&lt;/li&gt;</code></pre>
+          <div class="alert info">Le <code>asp-controller</code> + <code>asp-action</code> génère automatiquement l'URL correcte. Pas besoin d'écrire les URLs à la main.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- end tab-tp -->
 
 <!-- ═══════════════ DESIGN PATTERNS ═══════════════ -->
@@ -1848,6 +2175,64 @@ _flightService.Add(flight);    <span class="cm">// ajout en mémoire</span>
 _flightService.Commit();       <span class="cm">// SaveChanges → BDD</span></code></pre>
   </div>
 </div>
+<div class="card">
+  <h2>💉 Injection de Dépendances — Durées de vie (Program.cs)</h2>
+  <div class="alert warn">⚠️ Choisir la mauvaise durée de vie = bugs subtils de partage d'état ou de fuites mémoire.</div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Méthode</th><th>Durée de vie</th><th>Instances</th><th>Usage</th></tr>
+    <tr><td><code>AddSingleton&lt;I,C&gt;()</code></td><td>Toute la durée de l'application</td><td>1 seule pour tout</td><td>Config, cache global, services sans état partagés</td></tr>
+    <tr><td><code>AddScoped&lt;I,C&gt;()</code></td><td>1 par requête HTTP</td><td>Partagée dans la même requête</td><td>DbContext, UnitOfWork, Services métier</td></tr>
+    <tr><td><code>AddTransient&lt;I,C&gt;()</code></td><td>À chaque injection</td><td>Nouvelle à chaque fois</td><td>Services légers et sans état</td></tr>
+  </table></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div>
+      <h3>Program.cs — Configuration complète AM.UI.WEB</h3>
+      <pre><code><span class="kw">var</span> builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+
+<span class="cm">// Chaîne de connexion depuis appsettings.json</span>
+<span class="kw">var</span> cs = builder.Configuration
+    .GetConnectionString(<span class="st">"DefaultConnection"</span>);
+builder.Services.AddDbContext&lt;<span class="cl">AMContext</span>&gt;(o =>
+    o.UseSqlServer(cs).UseLazyLoadingProxies());
+
+<span class="cm">// Scoped = 1 instance / requête HTTP</span>
+builder.Services.AddScoped&lt;<span class="cl">IUnitOfWork</span>, <span class="cl">UnitOfWork</span>&gt;();
+builder.Services.AddScoped&lt;<span class="cl">IServiceFlight</span>, <span class="cl">ServiceFlight</span>&gt;();
+builder.Services.AddScoped&lt;<span class="cl">IServicePlane</span>, <span class="cl">ServicePlane</span>&gt;();
+<span class="cm">// Singleton pour le type générique du repository</span>
+builder.Services.AddSingleton(
+    <span class="kw">typeof</span>(GenericRepository&lt;&gt;));
+
+<span class="kw">var</span> app = builder.Build();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllerRoute(name: <span class="st">"default"</span>,
+    pattern: <span class="st">"{controller=Home}/{action=Index}/{id?}"</span>);
+app.Run();</code></pre>
+    </div>
+    <div>
+      <h3>appsettings.json</h3>
+      <pre><code>{
+  <span class="st">"ConnectionStrings"</span>: {
+    <span class="st">"DefaultConnection"</span>:
+      <span class="st">"Data Source=(localdb)\\mssqllocaldb;
+       Initial Catalog=AirportManagementDB;
+       Integrated Security=true"</span>
+  },
+  <span class="st">"Logging"</span>: {
+    <span class="st">"LogLevel"</span>: {
+      <span class="st">"Default"</span>: <span class="st">"Information"</span>
+    }
+  }
+}</code></pre>
+      <div class="alert info">AMContext doit avoir un constructeur acceptant <code>DbContextOptions</code> pour l'injection :<br><code>public AMContext(DbContextOptions&lt;AMContext&gt; options) : base(options) { }</code></div>
+      <div class="alert success">✅ DIP (Dependency Inversion Principle) : les contrôleurs dépendent des <strong>interfaces</strong> (IServiceFlight), pas des implémentations (ServiceFlight).</div>
+    </div>
+  </div>
+</div>
+
 <div class="card">
   <h2>📊 Couche Service Générique — Architecture complète</h2>
   <div class="grid g3">
@@ -1970,16 +2355,33 @@ _flightService.Commit();       <span class="cm">// SaveChanges → BDD</span></c
 
 <!-- ═══════════════ QUIZ ═══════════════ -->
 <div class="tab" id="tab-quiz">
+<div class="slabel">Quiz interactif — Filtrage par chapitre &amp; difficulté</div>
+<div class="mode-bar" style="flex-wrap:wrap;gap:8px;margin-bottom:16px">
+  <button class="mode-btn active" id="qf-all" onclick="filterQuiz('all',this)">📚 Tout</button>
+  <button class="mode-btn" id="qf-ch1" onclick="filterQuiz('ch1',this)">📘 Ch1 .NET</button>
+  <button class="mode-btn" id="qf-ch2" onclick="filterQuiz('ch2',this)">💜 Ch2 C#</button>
+  <button class="mode-btn" id="qf-ch3" onclick="filterQuiz('ch3',this)">🗄️ Ch3 EF Core</button>
+  <button class="mode-btn" id="qf-mvc" onclick="filterQuiz('mvc',this)">🌐 MVC</button>
+  <button class="mode-btn" id="qf-pat" onclick="filterQuiz('pat',this)">🏛️ Patterns</button>
+  <button class="mode-btn" id="qf-hard" onclick="filterQuiz('hard',this)">🔥 Difficile</button>
+</div>
+<div id="quiz-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+  <span class="badge b" id="qs-count">0 questions</span>
+  <span class="badge g" id="qs-score" style="display:none">Score: 0/0</span>
+  <span class="badge o" id="qs-progress" style="display:none">0% complété</span>
+</div>
 <div id="qwrap"></div>
-<div style="text-align:center;margin-top:16px">
-  <button class="btn btn-p" onclick="submitQuiz()">Valider mes réponses</button>
-  <button class="btn btn-o" style="margin-left:10px" onclick="resetQuiz()">Recommencer</button>
+<div style="text-align:center;margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+  <button class="btn btn-p" onclick="submitQuiz()">✅ Valider mes réponses</button>
+  <button class="btn btn-o" onclick="resetQuiz()">🔄 Recommencer</button>
+  <button class="btn btn-g" onclick="shuffleAndReset()" style="background:var(--green);color:#fff">🎲 Mélanger</button>
 </div>
 </div>
 
 <!-- ═══════════════ HOT TOPICS ═══════════════ -->
 <div class="tab" id="tab-hot">
 <div class="slabel">Ce qui tombe toujours à l'examen</div>
+<div class="alert danger" style="margin-bottom:20px">⚠️ <strong>Section Erreurs Communes</strong> — Lisez aussi le panneau "Pièges & Erreurs" ci-dessous !</div>
 <div class="hot">
   <h3>🔥 <span class="freq">×3</span> Annotations EF Core</h3>
   <p>Savoir écrire <code>[Key]</code>, <code>[Required]</code>, <code>[StringLength]</code>, <code>[ForeignKey]</code>, <code>[EmailAddress]</code>, <code>[Range]</code>, <code>[Table]</code> et leurs arguments. Apparaît dans TOUS les examens.</p>
@@ -2020,9 +2422,27 @@ _flightService.Commit();       <span class="cm">// SaveChanges → BDD</span></c
   <h3>🔥 <span class="freq">×2</span> Architecture N-Couches vs N-Tiers</h3>
   <p>N-Couches = <strong>logique</strong> (séparation fonctionnelle sur une même machine). N-Tiers = <strong>physique</strong> (déploiement sur plusieurs machines). Architecture Oignon = <strong>logique</strong>.</p>
 </div>
-</div>
 
-<!-- ═══════════════ EXAMENS ═══════════════ -->
+<div class="slabel">🐛 Erreurs communes &amp; Pièges à éviter</div>
+<div class="grid g2">
+  <div class="card" style="border-color:var(--red)">
+    <h2 style="color:var(--red)">❌ Erreurs EF Core</h2>
+    <div class="step"><div class="step-n" style="background:var(--red)">1</div><div class="step-c"><strong>NullReferenceException sur nav property</strong><p>Cause : Lazy Loading non activé OU propriété de navigation sans <code>virtual</code>. Fix : UseLazyLoadingProxies() + virtual sur toutes les nav props, OU utiliser .Include().</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--red)">2</div><div class="step-c"><strong>"Entity type requires a primary key"</strong><p>Cause : EF Core ne reconnaît pas la convention de PK. Fix : ajouter <code>[Key]</code> ou <code>builder.HasKey()</code> en Fluent API.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--red)">3</div><div class="step-c"><strong>Migration échoue : "No migrations configuration type was found"</strong><p>Cause : EF Core.Tools pas installé dans AM.Infrastructure, ou projet de démarrage non défini. Fix : cibler AM.Infrastructure dans la console PM.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--red)">4</div><div class="step-c"><strong>DbContext non disponible dans ApplicationCore</strong><p>Cause : AM.ApplicationCore ne peut pas référencer AM.Infrastructure (dépendance inversée). Fix : utiliser le pattern UnitOfWork avec une interface dans ApplicationCore.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--red)">5</div><div class="step-c"><strong>Remove-Migration échoue</strong><p>Cause : la migration a déjà été appliquée à la BDD. Fix : d'abord <code>Update-Database PrevMig</code> puis <code>Remove-Migration</code>.</p></div></div>
+  </div>
+  <div class="card" style="border-color:var(--orange)">
+    <h2 style="color:var(--orange)">⚠️ Erreurs C# / OOP</h2>
+    <div class="step"><div class="step-n" style="background:var(--orange)">1</div><div class="step-c"><strong>Confondre abstract et virtual</strong><p><code>abstract</code> = pas de corps, override obligatoire dans les classes concrètes. <code>virtual</code> = a un corps, override optionnel. Une classe <code>abstract</code> ne s'instancie pas.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--orange)">2</div><div class="step-c"><strong>Struct ne peut pas hériter</strong><p>Les structs ne supportent pas l'héritage entre eux. Ils peuvent implémenter des interfaces. Erreur classique à l'examen.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--orange)">3</div><div class="step-c"><strong>Visibilité par défaut = internal (pas private !)</strong><p>Une classe ou méthode sans modificateur → <code>internal</code>. Les membres d'une classe sans modificateur → <code>private</code>. Ces deux cas diffèrent !</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--orange)">4</div><div class="step-c"><strong>Action vs Func confondus</strong><p><code>Action</code> = jamais de valeur de retour (void). <code>Func</code> = toujours une valeur de retour (dernier paramètre de type = type retour).</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--orange)">5</div><div class="step-c"><strong>LINQ : exécution différée</strong><p>Écrire une requête LINQ ne l'exécute pas. Il faut appeler <code>.ToList()</code>, <code>foreach</code>, ou <code>.Count()</code> pour matérialiser les résultats.</p></div></div>
+    <div class="step"><div class="step-n" style="background:var(--orange)">6</div><div class="step-c"><strong>ASP.NET : constructeur AMContext manquant</strong><p>Pour AddDbContext() dans Program.cs, AMContext DOIT avoir <code>public AMContext(DbContextOptions&lt;AMContext&gt; o) : base(o) {}</code>. Sans ça → erreur DI au démarrage.</p></div></div>
+  </div>
+</div>
 <div class="tab" id="tab-exams">
   <div style="margin-bottom:20px">
     <h2 style="font-size:1.3rem;margin-bottom:8px">📝 Examens Corrigés</h2>
@@ -2419,84 +2839,75 @@ function visualize() {
 
 // ═══════════════ QUIZ ═══════════════
 const QUESTIONS = [
-  { q: "Quelle est la visibilité par défaut d'une classe C# sans modificateur ?", o: ["public", "private", "internal", "protected"], a: 2, e: "Sans modificateur, les types sont 'internal' (accessible dans le même assembly)." },
-  { q: "Quelle commande EF Core ajoute une migration ?", o: ["Create-Migration", "Add-Migration", "New-Migration", "Make-Migration"], a: 1, e: "La commande correcte est Add-Migration NomMigration depuis la console PM." },
-  { q: "Pour annuler la dernière migration appliquée (Mig3), on exécute :", o: ["Remove-Migration", "Update-Database Mig3", "Update-Database Mig2", "Delete-Migration Mig3"], a: 2, e: "Update-Database Mig2 revient à l'état avant Mig3. Remove-Migration ne fonctionne que si non appliquée." },
-  { q: "En TPH (Table Per Hierarchy), quelle méthode Fluent API configure la colonne discriminante ?", o: ["HasDiscriminator()", "HasTable()", "HasInheritance()", "HasTypeMapping()"], a: 0, e: "HasDiscriminator<int>('IsTraveller') configure la colonne discriminante pour l'héritage TPH." },
-  { q: "Quelle interface doit implémenter UnitOfWork pour libérer DbContext ?", o: ["IDisposable", "IReleasable", "IFinalizeable", "IManaged"], a: 0, e: "DbContext est une ressource non managée. IDisposable permet la libération déterministe via Dispose()." },
-  { q: "Action<Plane> est un délégué qui :", o: ["Retourne un Plane", "Prend un Plane et retourne void", "Prend un Plane et retourne bool", "Ne prend aucun paramètre"], a: 1, e: "Action<T> représente une méthode void qui prend T en paramètre. Il ne retourne jamais de valeur." },
-  { q: "La méthode LINQ OfType<T>() :", o: ["Filtre les éléments par type T", "Convertit tous les éléments en T", "Sélectionne les propriétés de type T", "Groupe par type T"], a: 0, e: "OfType<Traveller>() filtre la collection pour ne garder que les éléments qui sont des Traveller." },
-  { q: "En ASP.NET MVC, [ValidateAntiForgeryToken] protège contre :", o: ["XSS (Cross-Site Scripting)", "SQL Injection", "CSRF (Cross-Site Request Forgery)", "Buffer Overflow"], a: 2, e: "ValidateAntiForgeryToken valide le token anti-CSRF généré par asp-antiforgery dans les formulaires Razor." },
-  { q: "Quel package NuGet installer dans AM.Infrastructure pour les migrations ?", o: ["EF Core.Design", "EF Core.Tools", "EF Core.Migrations", "EF Core.Schema"], a: 1, e: "Microsoft.EntityFrameworkCore.Tools fournit les commandes Add-Migration et Update-Database dans la console PM." },
-  { q: "N-Tiers vs N-Couches : quelle architecture est PHYSIQUE ?", o: ["N-Couches", "Architecture Oignon", "N-Tiers", "MVC"], a: 2, e: "N-Tiers = architecture physique (déploiement sur plusieurs machines). N-Couches = logique (sur une même machine)." },
-  { q: "Pour le TPT via annotations, où mettre [Table] ?", o: ["Sur la classe mère", "Sur toutes les classes", "Sur les classes filles uniquement", "Sur l'interface"], a: 2, e: "[Table('Travellers')] s'applique sur les classes filles (Traveller, Staff) pour créer une table par type." },
-  { q: "Quelle est la stratégie d'héritage EF Core par défaut ?", o: ["TPT (Table Per Type)", "TPC (Table Per Concrete)", "TPH (Table Per Hierarchy)", "Aucune stratégie par défaut"], a: 2, e: "EF Core utilise TPH (une seule table avec colonne discriminante) par défaut." },
-  { q: "Func<string, double> représente :", o: ["Méthode void prenant une string", "Méthode retournant une string", "Méthode prenant une string et retournant un double", "Méthode prenant un double et retournant une string"], a: 2, e: "Func<T1, TResult> : le dernier paramètre de type est le type retour. Donc Func<string, double> = (string) => double." },
-  { q: "Le problème sans UnitOfWork dans les services est :", o: ["Performances dégradées", "Pas de persistance des données (pas de SaveChanges)", "Impossible de créer des instances", "Erreur de compilation"], a: 1, e: "Sans UnitOfWork, on ne peut pas appeler SaveChanges() depuis ApplicationCore (pas de référence au DbContext)." },
-  { q: "Quelle propriété doit être 'virtual' pour le Lazy Loading ?", o: ["Propriétés scalaires (int, string)", "Propriétés de navigation uniquement", "Toutes les propriétés", "Seulement la clé primaire"], a: 1, e: "Seules les propriétés de navigation (Plane, IList<Passenger>) doivent être virtual pour que les proxies EF puissent les intercepter." }
+  { q: "Quelle est la visibilité par défaut d'une classe C# sans modificateur ?", o: ["public", "private", "internal", "protected"], a: 2, e: "Sans modificateur, les types sont 'internal' (accessible dans le même assembly).", cat:"ch2", diff:"easy" },
+  { q: "Quelle commande EF Core ajoute une migration ?", o: ["Create-Migration", "Add-Migration", "New-Migration", "Make-Migration"], a: 1, e: "La commande correcte est Add-Migration NomMigration depuis la console PM.", cat:"ch3", diff:"easy" },
+  { q: "Pour annuler la dernière migration appliquée (Mig3), on exécute :", o: ["Remove-Migration", "Update-Database Mig3", "Update-Database Mig2", "Delete-Migration Mig3"], a: 2, e: "Update-Database Mig2 revient à l'état avant Mig3. Remove-Migration ne fonctionne que si non appliquée.", cat:"ch3", diff:"med" },
+  { q: "En TPH (Table Per Hierarchy), quelle méthode Fluent API configure la colonne discriminante ?", o: ["HasDiscriminator()", "HasTable()", "HasInheritance()", "HasTypeMapping()"], a: 0, e: "HasDiscriminator<int>('IsTraveller') configure la colonne discriminante pour l'héritage TPH.", cat:"ch3", diff:"med" },
+  { q: "Quelle interface doit implémenter UnitOfWork pour libérer DbContext ?", o: ["IDisposable", "IReleasable", "IFinalizeable", "IManaged"], a: 0, e: "DbContext est une ressource non managée. IDisposable permet la libération déterministe via Dispose().", cat:"pat", diff:"med" },
+  { q: "Action<Plane> est un délégué qui :", o: ["Retourne un Plane", "Prend un Plane et retourne void", "Prend un Plane et retourne bool", "Ne prend aucun paramètre"], a: 1, e: "Action<T> représente une méthode void qui prend T en paramètre. Il ne retourne jamais de valeur.", cat:"ch2", diff:"easy" },
+  { q: "La méthode LINQ OfType<T>() :", o: ["Filtre les éléments par type T", "Convertit tous les éléments en T", "Sélectionne les propriétés de type T", "Groupe par type T"], a: 0, e: "OfType<Traveller>() filtre la collection pour ne garder que les éléments qui sont des Traveller.", cat:"ch2", diff:"easy" },
+  { q: "En ASP.NET MVC, [ValidateAntiForgeryToken] protège contre :", o: ["XSS (Cross-Site Scripting)", "SQL Injection", "CSRF (Cross-Site Request Forgery)", "Buffer Overflow"], a: 2, e: "ValidateAntiForgeryToken valide le token anti-CSRF généré par asp-antiforgery dans les formulaires Razor.", cat:"mvc", diff:"easy" },
+  { q: "Quel package NuGet installer dans AM.Infrastructure pour les migrations ?", o: ["EF Core.Design", "EF Core.Tools", "EF Core.Migrations", "EF Core.Schema"], a: 1, e: "Microsoft.EntityFrameworkCore.Tools fournit les commandes Add-Migration et Update-Database dans la console PM.", cat:"ch3", diff:"easy" },
+  { q: "N-Tiers vs N-Couches : quelle architecture est PHYSIQUE ?", o: ["N-Couches", "Architecture Oignon", "N-Tiers", "MVC"], a: 2, e: "N-Tiers = architecture physique (déploiement sur plusieurs machines). N-Couches = logique (sur une même machine).", cat:"ch1", diff:"easy" },
+  { q: "Pour le TPT via annotations, où mettre [Table] ?", o: ["Sur la classe mère", "Sur toutes les classes", "Sur les classes filles uniquement", "Sur l'interface"], a: 2, e: "[Table('Travellers')] s'applique sur les classes filles (Traveller, Staff) pour créer une table par type.", cat:"ch3", diff:"med" },
+  { q: "Quelle est la stratégie d'héritage EF Core par défaut ?", o: ["TPT (Table Per Type)", "TPC (Table Per Concrete)", "TPH (Table Per Hierarchy)", "Aucune stratégie par défaut"], a: 2, e: "EF Core utilise TPH (une seule table avec colonne discriminante) par défaut.", cat:"ch3", diff:"easy" },
+  { q: "Func<string, double> représente :", o: ["Méthode void prenant une string", "Méthode retournant une string", "Méthode prenant une string et retournant un double", "Méthode prenant un double et retournant une string"], a: 2, e: "Func<T1, TResult> : le dernier paramètre de type est le type retour. Donc Func<string, double> = (string) => double.", cat:"ch2", diff:"med" },
+  { q: "Le problème sans UnitOfWork dans les services est :", o: ["Performances dégradées", "Pas de persistance des données (pas de SaveChanges)", "Impossible de créer des instances", "Erreur de compilation"], a: 1, e: "Sans UnitOfWork, on ne peut pas appeler SaveChanges() depuis ApplicationCore (pas de référence au DbContext).", cat:"pat", diff:"med" },
+  { q: "Quelle propriété doit être 'virtual' pour le Lazy Loading ?", o: ["Propriétés scalaires (int, string)", "Propriétés de navigation uniquement", "Toutes les propriétés", "Seulement la clé primaire"], a: 1, e: "Seules les propriétés de navigation (Plane, IList<Passenger>) doivent être virtual pour que les proxies EF puissent les intercepter.", cat:"ch3", diff:"med" },
+  { q: "AddSingleton() dans le conteneur DI crée :", o: ["Une instance par requête HTTP", "Une instance par injection", "Une seule instance pour toute la durée de vie de l'application", "Une instance par thread"], a: 2, e: "Singleton = 1 instance pour toute l'app. Utile pour les services sans état (cache, config). Attention aux problèmes de concurrence.", cat:"mvc", diff:"med" },
+  { q: "AddTransient() dans le conteneur DI crée :", o: ["Une instance partagée pour l'app", "Une instance par requête HTTP", "Une nouvelle instance à chaque injection", "Une instance par session utilisateur"], a: 2, e: "Transient = nouvelle instance à chaque fois qu'on la demande. Idéal pour les services légers et sans état.", cat:"mvc", diff:"med" },
+  { q: "Quelle est la différence entre abstract et virtual en C# ?", o: ["abstract force la redéfinition dans les classes filles, virtual la rend optionnelle", "virtual force la redéfinition, abstract la rend optionnelle", "Aucune différence pratique", "abstract s'applique aux propriétés, virtual aux méthodes"], a: 0, e: "abstract = pas de corps dans la classe mère, DOIT être redéfini (override) dans les classes concrètes filles. virtual = a un corps par défaut, override est optionnel.", cat:"ch2", diff:"med" },
+  { q: "Quel mot-clé empêche définitivement l'héritage d'une classe en C# ?", o: ["abstract", "static", "readonly", "sealed"], a: 3, e: "sealed class MaClasse {} → aucune classe ne peut hériter de MaClasse. Aussi utilisé sur des méthodes override pour bloquer la chaîne.", cat:"ch2", diff:"easy" },
+  { q: "Quel est le rôle de modelBuilder.ApplyConfiguration(new PlaneConfig()) ?", o: ["Crée la migration", "Applique la config Fluent API d'une classe IEntityTypeConfiguration<T>", "Met à jour la base de données", "Configure la chaîne de connexion"], a: 1, e: "ApplyConfiguration() est appelé dans OnModelCreating() pour appliquer la configuration Fluent API définie dans une classe séparée.", cat:"ch3", diff:"easy" },
+  { q: "Comment configurer une clé composite en Fluent API ?", o: ["builder.HasKey(e => e.A, e => e.B)", "builder.HasKey(e => new { e.A, e.B })", "builder.CompositeKey(e.A, e.B)", "builder.PrimaryKey(e.A, e.B)"], a: 1, e: "HasKey(e => new { e.A, e.B }) avec un type anonyme permet de définir une clé primaire composite.", cat:"ch3", diff:"med" },
+  { q: "Que fait configurationBuilder.Properties<string>().HaveMaxLength(50) dans ConfigureConventions ?", o: ["Configure une seule propriété string", "Applique MaxLength(50) à toutes les propriétés string de toutes les entités", "Crée une migration avec VARCHAR(50)", "Configure uniquement les nouvelles entités"], a: 1, e: "ConfigureConventions s'applique globalement à toutes les propriétés du type string dans tout le modèle EF Core.", cat:"ch3", diff:"hard" },
+  { q: "Qu'est-ce qu'un owned entity type (type détenu) en EF Core ?", o: ["Une entité avec une PK composite", "Une classe sans identité propre, mappée dans les colonnes de l'entité propriétaire", "Une entité qui hérite d'une autre", "Une table avec une FK obligatoire"], a: 1, e: "OwnsOne() : le type détenu (ex: FullName) n'a pas de table propre. Ses propriétés sont des colonnes de la table propriétaire (ex: Passenger).", cat:"ch3", diff:"hard" },
+  { q: "Dans l'architecture en couches, quelle direction vont les références de projets ?", o: ["AM.ApplicationCore → AM.Infrastructure → AM.UI", "AM.UI → AM.Infrastructure → AM.ApplicationCore", "AM.Infrastructure → AM.UI → AM.ApplicationCore", "Toutes les couches se référencent mutuellement"], a: 1, e: "UI référence Infrastructure. Infrastructure référence ApplicationCore. ApplicationCore n'a aucune référence externe.", cat:"ch1", diff:"med" },
+  { q: "Quelle méthode LINQ filtre les éléments par type concret ?", o: [".Where(x => x is Traveller)", ".Cast<Traveller>()", ".OfType<Traveller>()", ".Filter<Traveller>()"], a: 2, e: "OfType<T>() filtre sans exception. .Cast<T>() lèverait une exception si un élément n'est pas de type T.", cat:"ch2", diff:"med" },
+  { q: "Comment déclarer correctement une méthode d'extension en C# ?", o: ["public static T M(T source) dans une classe normale", "public static T M(this T source) dans une classe static", "public T M(ref T source)", "public extension T M(T source)"], a: 1, e: "Méthode d'extension = méthode static dans une classe static, avec 'this TypeCible' comme premier paramètre.", cat:"ch2", diff:"med" },
+  { q: "Quelle annotation affiche 'Date de Naissance' dans un formulaire MVC ?", o: ["[Label(\"Date de Naissance\")]", "[Title(\"Date de Naissance\")]", "[Display(Name = \"Date de Naissance\")]", "[FormLabel(\"Date de Naissance\")]"], a: 2, e: "[Display(Name = ...)] est l'annotation standard pour personnaliser le libellé affiché dans les vues Razor asp-for.", cat:"mvc", diff:"easy" },
+  { q: "Quelle est la syntaxe correcte pour héritage simple en C# ?", o: ["public class Staff implements Passenger", "public class Staff : Passenger", "public class Staff extends Passenger", "public class Staff(Passenger)"], a: 1, e: "C# utilise ':' pour l'héritage. 'implements' et 'extends' sont des mots-clés Java.", cat:"ch2", diff:"easy" },
+  { q: "Comment appeler la méthode de la classe mère dans une méthode override ?", o: ["parent.PassengerType()", "super.PassengerType()", "base.PassengerType()", "this.base.PassengerType()"], a: 2, e: "En C#, 'base.' permet d'appeler la méthode de la classe parente depuis une méthode override. En Java c'est 'super.'.", cat:"ch2", diff:"easy" },
+  { q: "Quelle interface .NET libère les ressources non-managées comme DbContext ?", o: ["IReleasable", "IDisposable", "IDestructible", "IFinalize"], a: 1, e: "IDisposable définit la méthode Dispose() pour libérer les ressources non managées. GC.SuppressFinalize(this) évite que le GC appelle aussi le finalizer.", cat:"pat", diff:"med" },
+  { q: "Que retourne .GroupBy(f => f.Destination) appliqué à une liste de Flight ?", o: ["IEnumerable<Flight>", "Dictionary<string, Flight>", "IEnumerable<IGrouping<string, Flight>>", "List<string>"], a: 2, e: "GroupBy retourne IEnumerable<IGrouping<TKey, TElement>>. Chaque IGrouping a une propriété .Key et est lui-même IEnumerable<Flight>.", cat:"ch2", diff:"hard" },
+  { q: "Erreur 'No DbContext found in assembly' lors de Add-Migration. Que faire ?", o: ["Réinstaller EF Core", "Changer le Default Project dans PMC vers AM.Infrastructure", "Supprimer le dossier Migrations", "Redémarrer Visual Studio"], a: 1, e: "EF Core cherche le DbContext dans le projet Default Project du PMC. Changer vers AM.Infrastructure qui contient AMContext.", cat:"ch3", diff:"med" },
+  { q: "Comment passer une SelectList d'avions à la vue Create dans FlightController ?", o: ["return View(planes)", "ViewBag.Planes = new SelectList(planes, \"PlaneId\", \"Info\"); return View()", "ViewData[\"Planes\"] = planes; return View()", "b) et c) sont tous les deux corrects"], a: 3, e: "ViewBag.Planes ET ViewData[\"Planes\"] fonctionnent tous les deux pour passer des données supplémentaires à la vue.", cat:"mvc", diff:"med" },
+  { q: "Quelle annotation C# indique qu'une propriété est une clé étrangère ?", o: ["[Key]", "[FK]", "[ForeignKey(\"NomNavigation\")]", "[Reference]"], a: 2, e: "[ForeignKey(\"NomPropriétéNavigation\")] lie la propriété FK à la propriété de navigation correspondante.", cat:"ch3", diff:"easy" },
+  { q: "Le Pattern PRG (Post/Redirect/Get) en MVC est implémenté par :", o: ["return View()", "return Json(data)", "return RedirectToAction(nameof(Index))", "return Content(\"ok\")"], a: 2, e: "Après un POST réussi, RedirectToAction() redirige vers un GET. Cela évite la double soumission du formulaire (F5).", cat:"mvc", diff:"easy" },
+  { q: "Struct vs Class en C# — quelle affirmation est VRAIE ?", o: ["Un struct peut hériter d'une autre struct", "Un struct est un type référence stocké dans le heap", "Un struct est un type valeur stocké dans le stack", "Un struct peut être null sans Nullable<T>"], a: 2, e: "Struct = type valeur (stack). Class = type référence (heap). Struct ne supporte pas l'héritage. Struct ne peut pas être null (sauf Nullable<T>).", cat:"ch2", diff:"med" },
+  { q: "Quelle est la convention EF Core pour reconnaître automatiquement une PK dans 'Vehicule' ?", o: ["VehiculeKey uniquement", "Id ou VehiculeId", "PrimaryKey", "ClePrimaire"], a: 1, e: "EF Core reconnaît automatiquement 'Id' ou 'NomClasseId' (ex: VehiculeId) comme clé primaire par convention.", cat:"ch3", diff:"easy" },
+  { q: "Pour le lazy loading, quel constructeur AMContext est obligatoire pour AddDbContext() ?", o: ["AMContext() sans paramètre", "AMContext(string connectionString)", "AMContext(DbContextOptions<AMContext> options)", "AMContext(IConfiguration config)"], a: 2, e: "AddDbContext<AMContext>() injecte DbContextOptions<AMContext>. AMContext doit avoir ce constructeur : base(options).", cat:"ch3", diff:"hard" },
+  { q: "Que signifie IEnumerable<T> vs IList<T> en C# ?", o: ["IList étend IEnumerable et ajoute l'accès indexé", "IEnumerable est plus rapide que IList", "IList est immuable, IEnumerable est mutable", "Aucune différence pratique"], a: 0, e: "IEnumerable = lecture seule, parcours séquentiel. IList étend IEnumerable et ajoute Add, Remove, accès par index [i].", cat:"ch2", diff:"hard" },
+  { q: "Où appelle-t-on ConfigureConventions() dans EF Core ?", o: ["Dans OnConfiguring()", "Dans le constructeur du DbContext", "Dans OnModelCreating()", "ConfigureConventions est une méthode override du DbContext"], a: 3, e: "ConfigureConventions est une méthode protected override de DbContext, comme OnModelCreating. Elle est appelée avant OnModelCreating.", cat:"ch3", diff:"hard" }
 ];
 
 let answers = {};
-function buildQuiz() {
-  const wrap = document.getElementById('qwrap');
-  if (wrap.children.length > 0) return;
-  wrap.innerHTML = '';
-  QUESTIONS.forEach((q, i) => {
-    const card = document.createElement('div');
-    card.className = 'qcard';
-    card.id = 'q' + i;
-    const opts = q.o.map((o, j) => `
-      <label id="q${i}o${j}">
-        <input type="radio" name="q${i}" value="${j}">
-        ${String.fromCharCode(97+j)}) ${o}
-      </label>`).join('');
-    card.innerHTML = `
-      <div class="qtext">Q${i+1}. ${q.q}</div>
-      <div class="opts">${opts}</div>
-      <div class="expl" id="expl${i}">${q.e}</div>`;
-    wrap.appendChild(card);
-    card.querySelectorAll('input').forEach(inp => {
-      inp.addEventListener('change', () => { answers[i] = parseInt(inp.value); });
-    });
-  });
-}
+let activeFilter = 'all';
+let quizQuestions = [...QUESTIONS];
 
-function submitQuiz() {
-  buildQuiz();
-  let score = 0;
-  QUESTIONS.forEach((q, i) => {
-    const card = document.getElementById('q' + i);
-    card.querySelectorAll('.opts label').forEach((l, j) => {
-      l.classList.remove('correct','wrong');
-    });
-    const userAns = answers[i];
-    if (userAns !== undefined) {
-      const lbl = document.getElementById(`q${i}o${userAns}`);
-      lbl.classList.add(userAns === q.a ? 'correct' : 'wrong');
-      document.getElementById(`q${i}o${q.a}`).classList.add('correct');
-      if (userAns === q.a) score++;
-    } else {
-      document.getElementById(`q${i}o${q.a}`).classList.add('correct');
-    }
-    document.getElementById('expl' + i).style.display = 'block';
-  });
-  const pct = Math.round(score/QUESTIONS.length*100);
-  const existing = document.getElementById('score-display');
-  if (existing) existing.remove();
-  const scoreEl = document.createElement('div');
-  scoreEl.id = 'score-display';
-  scoreEl.className = 'score-box';
-  scoreEl.innerHTML = `<h2>${score}/${QUESTIONS.length} — ${pct}%</h2>
-    <p style="color:var(--muted)">${pct >= 80 ? '🎉 Excellent !' : pct >= 60 ? '👍 Bien, continuez !' : '📚 Révisez encore...'}</p>`;
-  document.getElementById('qwrap').insertBefore(scoreEl, document.getElementById('qwrap').firstChild);
-}
-
-function resetQuiz() {
+function filterQuiz(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.mode-bar .mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (cat === 'all') quizQuestions = [...QUESTIONS];
+  else if (cat === 'hard') quizQuestions = QUESTIONS.filter(q => q.diff === 'hard' || q.diff === 'med');
+  else quizQuestions = QUESTIONS.filter(q => q.cat === cat);
   answers = {};
   document.getElementById('qwrap').innerHTML = '';
-  const existing = document.getElementById('score-display');
-  if (existing) existing.remove();
   buildQuiz();
+}
+
+function shuffleAndReset() {
+  quizQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
+  answers = {};
+  document.getElementById('qwrap').innerHTML = '';
+  buildQuiz();
+}
+
+function getDiffBadge(diff) {
+  if (diff === 'easy') return '<span class="pill g" style="font-size:10px;padding:1px 6px">facile</span>';
+  if (diff === 'med') return '<span class="pill o" style="font-size:10px;padding:1px 6px">moyen</span>';
+  return '<span class="pill r" style="font-size:10px;padding:1px 6px">difficile</span>';
 }
 
 // ═══════════════ REVISION TAB ═══════════════
@@ -2833,6 +3244,101 @@ function buildCases() {
 
 <div class="tab" id="tab-appendix">
 <div class="slabel">Appendix - Source Extras</div>
+
+<div class="card" style="border-color:var(--yellow)">
+  <h2>⚡ Formulaire Express — Ce que tu DOIS savoir par cœur</h2>
+  <div class="grid g3">
+    <div>
+      <h3>🔑 Annotations indispensables</h3>
+      <pre><code><span class="an">[Key]</span>              <span class="cm">// PK non-conventionnelle</span>
+<span class="an">[Required]</span>         <span class="cm">// NOT NULL</span>
+<span class="an">[EmailAddress]</span>     <span class="cm">// format email</span>
+<span class="an">[MaxLength(n)]</span>     <span class="cm">// longueur max string</span>
+<span class="an">[Range(min, max)]</span>  <span class="cm">// plage numérique</span>
+<span class="an">[ForeignKey("Nav")]</span> <span class="cm">// clé étrangère</span>
+<span class="an">[Display(Name="X")]</span> <span class="cm">// libellé formulaire</span>
+<span class="an">[DataType(DataType.Date)]</span> <span class="cm">// date seule</span>
+<span class="an">[Table("Nom")]</span>     <span class="cm">// nom table BD</span></code></pre>
+    </div>
+    <div>
+      <h3>📦 Migrations (PMC)</h3>
+      <pre><code><span class="cm">// Créer migration</span>
+Add-Migration NomMig
+
+<span class="cm">// Appliquer à la BD</span>
+Update-Database
+
+<span class="cm">// Rollback à Mig2 (annule Mig3)</span>
+Update-Database Mig2
+
+<span class="cm">// Supprimer dernière non-appliquée</span>
+Remove-Migration
+
+<span class="cm">// Projet cible = AM.Infrastructure !</span></code></pre>
+    </div>
+    <div>
+      <h3>🔗 Fluent API pattern</h3>
+      <pre><code><span class="cm">// Relation 1-to-Many</span>
+builder.HasOne(a => a.B)
+    .WithMany(b => b.As)
+    .HasForeignKey(a => a.BId);
+
+<span class="cm">// Clé composite</span>
+builder.HasKey(e => <span class="kw">new</span> {
+    e.A, e.B, e.C
+});
+
+<span class="cm">// Appel dans OnModelCreating</span>
+modelBuilder
+    .ApplyConfiguration(<span class="kw">new</span> MaConfig());</code></pre>
+    </div>
+    <div>
+      <h3>🌐 ASP.NET MVC — pattern CRUD</h3>
+      <pre><code><span class="cm">// GET → retourner vue avec model</span>
+<span class="kw">public</span> ActionResult Index()
+    => View(_service.GetAll().ToList());
+
+<span class="cm">// POST → ajouter + redirect (PRG)</span>
+[HttpPost][ValidateAntiForgeryToken]
+<span class="kw">public</span> ActionResult Create(T obj)
+{
+    _service.Add(obj);
+    _service.Commit();
+    <span class="kw">return</span> RedirectToAction(
+        <span class="kw">nameof</span>(Index));
+}</code></pre>
+    </div>
+    <div>
+      <h3>🏗️ Architecture — Physique vs Logique</h3>
+      <pre style="font-size:11.5px"><code>N-Tiers   → <span class="pill g" style="font-size:10px">Physique</span>
+           serveurs séparés
+
+N-Couches → <span class="pill b" style="font-size:10px">Logique</span>
+           UI / Métier / DAL
+
+MVC       → <span class="pill b" style="font-size:10px">Logique</span>
+           Model / View / Controller
+
+Oignon    → <span class="pill b" style="font-size:10px">Logique</span>
+           Domain au centre</code></pre>
+    </div>
+    <div>
+      <h3>🦥 Lazy Loading — 3 conditions</h3>
+      <pre><code><span class="cm">// 1. Package NuGet</span>
+EF Core.Proxies
+
+<span class="cm">// 2. OnConfiguring</span>
+o.UseLazyLoadingProxies()
+
+<span class="cm">// 3. Propriétés nav = virtual</span>
+<span class="kw">public virtual</span> <span class="cl">Plane</span> Plane {...}
+<span class="kw">public virtual</span> IList&lt;<span class="cl">Ticket</span>&gt; Tickets {...}
+
+<span class="cm">// Sans les 3 → NullReferenceException</span></code></pre>
+    </div>
+  </div>
+</div>
+
 
 <div class="card">
   <h2>🖥️ Visual Studio 2022</h2>
