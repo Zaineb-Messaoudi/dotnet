@@ -12,6 +12,7 @@
   --text:#e2e8f0;--muted:#64748b;--hover:#151e30;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100%}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;transition:padding-left .25s ease}
 a{color:var(--accent);text-decoration:none}
 /* SIDEBAR */
@@ -34,15 +35,21 @@ body.sidebar-open nav{transform:translateX(0)}
 .desktop-layout .nav-search{margin:4px 0 2px;padding-bottom:4px}
 .desktop-layout .nav-search input{padding:8px 10px;font-size:12px}
 .desktop-layout nav button{padding:8px 10px;font-size:12px;line-height:1.25}
-.desktop-layout nav button.active{padding-left:24px}
+.desktop-layout nav button.active{padding-left:24px;box-shadow:inset 3px 0 0 var(--accent),0 0 0 1px rgba(59,130,246,.18),0 8px 18px rgba(59,130,246,.12)}
 .desktop-layout nav button.active::before{left:7px;width:7px;height:7px}
+.desktop-layout nav button.active{transform:none}
 .mobile-layout{padding-left:0}
 .mobile-layout .menu-toggle{display:flex}
 .mobile-layout nav{transform:translateX(-100%)}
 .mobile-layout.sidebar-open nav{transform:translateX(0)}
 .mobile-layout.sidebar-open .menu-toggle{display:none}
+.mobile-layout .nav-search{position:sticky;top:0}
 .sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .brand{font-weight:800;font-size:14px;padding:10px 10px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.appendix-jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.appendix-jump a{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(17,24,39,.7);color:var(--muted);font-size:12px;font-weight:600;transition:.2s}
+.appendix-jump a:hover{color:#fff;border-color:var(--accent);background:rgba(59,130,246,.12)}
+.appendix-anchor{scroll-margin-top:18px}
 .nav-search{margin:6px 0 4px;position:sticky;top:0;z-index:2;background:linear-gradient(180deg,rgba(11,15,25,.98) 0%,rgba(11,15,25,.88) 100%);padding-bottom:6px}
 .nav-search input{width:100%;background:rgba(17,24,39,.9);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px;outline:none;transition:.2s;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
 .nav-search input::placeholder{color:var(--muted)}
@@ -74,6 +81,7 @@ nav button.active{padding-left:28px}
 /* TABS */
 .tab{display:none;padding:28px 24px;max-width:1200px;margin:0 auto}
 .tab.active{display:block}
+.tab, .hero, nav, .card{max-width:100%}
 /* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;transition:border-color .2s}
 .card:hover{border-color:rgba(59,130,246,.35)}
@@ -85,6 +93,7 @@ nav button.active{padding-left:28px}
 .card li{margin-bottom:3px}
 /* GRID */
 .grid{display:grid;gap:18px}
+.grid > *{min-width:0}
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 /* CODE */
@@ -242,7 +251,7 @@ tr:hover td{background:var(--hover)}
     <button onclick="show('quiz')">❓ Quiz</button>
     <button onclick="show('hot')">🔥 Hot</button>
     <button onclick="show('revision')">🔄 Rev</button>
-    <button onclick="show('appendix')">📎 Ref</button>
+    <button onclick="show('appendix-vs')">📎 Ref</button>
   </div>
   <button onclick="show('home')" class="active" id="tn-home">🏠 Accueil</button>
   <button onclick="show('ch1')" id="tn-ch1">📘 Ch1 .NET</button>
@@ -257,10 +266,10 @@ tr:hover td{background:var(--hover)}
   <button onclick="show('exams')" id="tn-exams">📝 Examens</button>
   <button onclick="show('cases')" id="tn-cases">📚 Cas Pratiques</button>
   <button onclick="show('revision')" id="tn-revision">🔄 Révision</button>
-  <button onclick="show('appendix')" id="tn-appendix">📎 Appendix</button>
+  <button onclick="show('appendix-vs')" id="tn-appendix">📎 Appendix</button>
 </nav>
 
-<!-- ═══════════════ HOME ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HOME â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab active" id="tab-home">
 <div class="hero">
   <h1>Architecture des SI I — .NET</h1>
@@ -322,6 +331,17 @@ tr:hover td{background:var(--hover)}
     </div>
   </div>
   <div class="card" style="margin-top:8px">
+    <h2>📎 Appendix Quick Links</h2>
+    <div class="grid g3">
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-vs')">🖥️ VS 2022</button>
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-ef')">🗄️ EF Core</button>
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-mvc')">🌐 MVC</button>
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-collections')">🔍 LINQ</button>
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-visualizer')">🔗 Visualizer</button>
+      <button class="btn btn-o" style="width:100%" onclick="show('appendix-nuget')">📦 NuGet</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
     <h2>🔥 Ce qui tombe toujours à l'examen</h2>
     <div class="grid g3">
       <div><span class="pill o">×3</span> Annotations EF Core ([Key], [Required], [ForeignKey]...)</div>
@@ -335,7 +355,7 @@ tr:hover td{background:var(--hover)}
 </div>
 </div>
 
-<!-- ═══════════════ CH1 — .NET INTRO ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CH1 — .NET INTRO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-ch1">
 <div class="slabel">Chapitre 1 — Plateforme .NET</div>
 <div class="card">
@@ -436,7 +456,7 @@ tr:hover td{background:var(--hover)}
 </div>
 </div>
 
-<!-- ═══════════════ CH2 — C# ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CH2 — C# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-ch2">
 <div class="slabel">Chapitre 2 — Langage C#</div>
 <div class="card">
@@ -761,7 +781,7 @@ Plane p2 = <span class="kw">new</span> Plane
 </div>
 </div>
 
-<!-- ═══════════════ CH3 — EF CORE ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CH3 — EF CORE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-ch3">
 <div class="slabel">Chapitre 3 — Entity Framework Core</div>
 <div class="card">
@@ -839,6 +859,9 @@ builder.HasOne(f => f.Plane)
     <div class="alert info">Supprimer un <code>Plane</code> avec <code>Cascade</code> supprime aussi tous ses <code>Flights</code> automatiquement.</div>
   </div>
 </div>
+<div class="grid g2">
+  <div class="card">
+    <h2>🗄️ DbContext AirportManagement</h2>
     <pre><code><span class="kw">public class</span> <span class="cl">AMContext</span> : DbContext
 {
     <span class="cm">// DbSet = table en base de données</span>
@@ -1129,7 +1152,7 @@ ctx.Entry(flight)
 </div>
 </div>
 
-<!-- ═══════════════ EF VISUALIZER ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EF VISUALIZER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-efviz">
 <div class="card">
   <h2>🔗 Entity Framework Core — Relationship Visualizer</h2>
@@ -1165,7 +1188,7 @@ ctx.Entry(flight)
 </div>
 </div>
 
-<!-- ═══════════════ TP AIRPORT MANAGEMENT ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TP AIRPORT MANAGEMENT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-tp">
 <div class="hero" style="padding:32px 24px;margin-bottom:24px;border-radius:14px;border:1px solid var(--border)">
   <h1 style="font-size:1.8rem">✈️ TP Airport Management</h1>
@@ -2163,7 +2186,7 @@ builder.Services.AddSingleton(
 
 </div><!-- end tab-tp -->
 
-<!-- ═══════════════ DESIGN PATTERNS ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• DESIGN PATTERNS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-patterns">
 <div class="slabel">Design Patterns .NET — Repository, UnitOfWork, Service</div>
 <div class="grid g2">
@@ -2291,7 +2314,7 @@ app.Run();</code></pre>
 </div>
 </div>
 
-<!-- ═══════════════ ASP.NET MVC ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ASP.NET MVC â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-mvc">
 <div class="slabel">ASP.NET MVC — Architecture &amp; Patterns</div>
 <div class="grid g2">
@@ -2378,7 +2401,7 @@ app.Run();</code></pre>
 </div>
 </div>
 
-<!-- ═══════════════ QUIZ ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• QUIZ â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-quiz">
 <div class="slabel">Quiz interactif — Filtrage par chapitre &amp; difficulté</div>
 <div class="mode-bar" style="flex-wrap:wrap;gap:8px;margin-bottom:16px">
@@ -2403,7 +2426,7 @@ app.Run();</code></pre>
 </div>
 </div>
 
-<!-- ═══════════════ HOT TOPICS ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HOT TOPICS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-hot">
 <div class="slabel">Ce qui tombe toujours à l'examen</div>
 <div class="alert danger" style="margin-bottom:20px">⚠️ <strong>Section Erreurs Communes</strong> — Lisez aussi le panneau "Pièges & Erreurs" ci-dessous !</div>
@@ -2468,6 +2491,7 @@ app.Run();</code></pre>
     <div class="step"><div class="step-n" style="background:var(--orange)">6</div><div class="step-c"><strong>ASP.NET : constructeur AMContext manquant</strong><p>Pour AddDbContext() dans Program.cs, AMContext DOIT avoir <code>public AMContext(DbContextOptions&lt;AMContext&gt; o) : base(o) {}</code>. Sans ça → erreur DI au démarrage.</p></div></div>
   </div>
 </div>
+</div><!-- end tab-hot -->
 <div class="tab" id="tab-exams">
   <div style="margin-bottom:20px">
     <h2 style="font-size:1.3rem;margin-bottom:8px">📝 Examens Corrigés</h2>
@@ -2476,7 +2500,7 @@ app.Run();</code></pre>
   <div id="exams-container"></div>
 </div>
 
-<!-- ═══════════════ CAS PRATIQUES ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CAS PRATIQUES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-cases">
   <div style="margin-bottom:20px">
     <h2 style="font-size:1.3rem;margin-bottom:8px">📚 Cas Pratiques — Scénarios d'Examens</h2>
@@ -2485,7 +2509,7 @@ app.Run();</code></pre>
   <div id="cases-container"></div>
 </div>
 
-<!-- ═══════════════ RÉVISION COMPLÈTE ═══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RÉVISION COMPLÃˆTE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="tab" id="tab-revision">
 <div class="slabel">Études de cas — Révision complète avec code source</div>
 <div class="card">
@@ -2796,30 +2820,92 @@ configurationBuilder.Properties&lt;<span class="kw">string</span>&gt;()
 </div><!-- end tab-revision -->
 
 <script>
-// ═══════════════ TAB NAVIGATION ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TAB NAVIGATION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const ROUTES = {
+  home: 'home',
+  ch1: 'ch1',
+  ch2: 'ch2',
+  ch3: 'ch3',
+  efviz: 'efviz',
+  tp: 'tp',
+  patterns: 'patterns',
+  mvc: 'mvc',
+  quiz: 'quiz',
+  hot: 'hot',
+  exams: 'exams',
+  cases: 'cases',
+  revision: 'revision',
+  'appendix-nuget': 'appendix',
+  'appendix-vs': 'appendix',
+  'appendix-namespaces': 'appendix',
+  'appendix-collections': 'appendix',
+  'appendix-ef': 'appendix',
+  'appendix-annotations': 'appendix',
+  'appendix-mvc': 'appendix',
+  'appendix-visualizer': 'appendix',
+  appendix: 'appendix'
+};
+
 function show(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const routeName = ROUTES[name] || 'home';
+  const appendixAnchor = name === 'appendix' ? 'appendix-vs' : (name.startsWith('appendix-') ? name : null);
+  const tabName = appendixAnchor ? 'appendix' : routeName;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+    t.style.display = 'none';
+  });
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  const targetTab = document.getElementById('tab-' + name);
-  const targetButton = document.getElementById('tn-' + name);
-  if (targetTab) targetTab.classList.add('active');
+  const targetTab = document.getElementById('tab-' + tabName);
+  const targetButton = document.getElementById('tn-' + tabName);
+  if (targetTab) {
+    targetTab.classList.add('active');
+    targetTab.style.display = 'block';
+  }
   if (targetButton) {
     targetButton.classList.add('active');
     targetButton.setAttribute('aria-current', 'page');
-    requestAnimationFrame(() => targetButton.scrollIntoView({ block: 'center', behavior: 'smooth' }));
+    if (document.body.classList.contains('mobile-layout')) {
+      requestAnimationFrame(() => targetButton.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+    }
   }
   document.querySelectorAll('nav button[id^="tn-"]').forEach(btn => {
-    if (btn.id !== 'tn-' + name) btn.setAttribute('aria-current', 'false');
+    if (btn.id !== 'tn-' + routeName) btn.setAttribute('aria-current', 'false');
   });
-  if (name === 'quiz') buildQuiz();
-  if (name === 'exams') buildExams();
-  if (name === 'cases') buildCases();
-  if (name === 'revision') buildRevQuiz();
-  document.body.classList.remove('sidebar-open');
+  if (routeName === 'quiz') buildQuiz();
+  if (routeName === 'exams') buildExams();
+  if (routeName === 'cases') buildCases();
+  if (routeName === 'revision') buildRevQuiz();
+  history.replaceState(null, '', '#' + (appendixAnchor || routeName));
+  if (appendixAnchor) {
+    requestAnimationFrame(() => jumpToSection(appendixAnchor));
+  } else {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+  if (document.body.classList.contains('mobile-layout')) {
+    document.body.classList.remove('sidebar-open');
+  }
 }
 
+function wireRouteTriggers() {
+  document.querySelectorAll('[onclick*="show("]').forEach(el => {
+    const match = el.getAttribute('onclick').match(/show\('([^']+)'\)/);
+    if (!match) return;
+    el.dataset.route = match[1];
+    el.removeAttribute('onclick');
+  });
+}
 
-// ═══════════════ TP ACCORDION ═══════════════
+document.addEventListener('click', event => {
+  const trigger = event.target.closest('[data-route]');
+  if (!trigger) return;
+  event.preventDefault();
+  show(trigger.dataset.route);
+});
+
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TP ACCORDION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function filterNav(query) {
   const needle = query.trim().toLowerCase();
   document.querySelectorAll('nav button[id^="tn-"]').forEach(btn => {
@@ -2844,6 +2930,28 @@ function applyLayoutMode() {
   }
 }
 
+function showFromHash() {
+  const hash = (location.hash || '#home').slice(1);
+  if (hash.startsWith('appendix-')) {
+    show(hash);
+    requestAnimationFrame(() => jumpToSection(hash));
+    return;
+  }
+  if (hash === 'appendix') {
+    show('appendix');
+    requestAnimationFrame(() => jumpToSection('appendix-vs'));
+    return;
+  }
+  show(document.getElementById('tab-' + hash) ? hash : 'home');
+}
+
+function jumpToSection(id) {
+  const element = document.getElementById(id);
+  if (!element) return;
+  history.replaceState(null, '', '#' + id);
+  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function toggleTP(header) {
   const body = header.nextElementSibling;
   const arrow = header.querySelector('span:last-child');
@@ -2853,7 +2961,7 @@ function toggleTP(header) {
   arrow.textContent = isOpen ? '▶' : '▼';
 }
 
-// ═══════════════ EF VISUALIZER ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EF VISUALIZER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function visualize() {
   const e1 = document.getElementById('e1').value.trim();
   const e2 = document.getElementById('e2').value.trim();
@@ -2880,7 +2988,7 @@ function visualize() {
   result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ═══════════════ QUIZ ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• QUIZ â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const QUESTIONS = [
   { q: "Quelle est la visibilité par défaut d'une classe C# sans modificateur ?", o: ["public", "private", "internal", "protected"], a: 2, e: "Sans modificateur, les types sont 'internal' (accessible dans le même assembly).", cat:"ch2", diff:"easy" },
   { q: "Quelle commande EF Core ajoute une migration ?", o: ["Create-Migration", "Add-Migration", "New-Migration", "Make-Migration"], a: 1, e: "La commande correcte est Add-Migration NomMigration depuis la console PM.", cat:"ch3", diff:"easy" },
@@ -2953,7 +3061,7 @@ function getDiffBadge(diff) {
   return '<span class="pill r" style="font-size:10px;padding:1px 6px">difficile</span>';
 }
 
-// ═══════════════ REVISION TAB ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• REVISION TAB â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function showRevTab(name, btn) {
   ['vehicules','clinique','foire','qcm-rev'].forEach(n => {
     const el = document.getElementById('rev-' + n);
@@ -2964,7 +3072,7 @@ function showRevTab(name, btn) {
   if (name === 'qcm-rev') buildRevQuiz();
 }
 
-// ═══════════════ REVISION QCM ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• REVISION QCM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const REV_QUESTIONS = [
   {q:"Quelle est la différence principale entre .NET Core et .NET Framework ?",o:["a) .NET Core ne supporte pas C#","b) .NET Core est multiplateforme (Windows, Linux, macOS)","c) .NET Framework est open source","d) .NET Core ne peut pas accéder aux bases de données"],c:1,e:".NET Core est open source et cross-platform. .NET Framework est limité à Windows."},
   {q:"Qu'est-ce que le mot-clé 'virtual' permet en C# ?",o:["a) Déclarer une méthode sans corps","b) Empêcher l'héritage d'une classe","c) Permettre à une méthode d'être redéfinie dans une classe fille avec 'override'","d) Déclarer un champ statique"],c:2,e:"virtual + override = polymorphisme d'héritage. La méthode peut être redéfinie dans les classes dérivées."},
@@ -3010,7 +3118,7 @@ function checkRevQ(i, correct) {
   radios.forEach(r => r.disabled = true);
 }
 
-// ═══════════════ EXAMS DATA ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EXAMS DATA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const EXAMS = [
   {
     id:"ex1", label:"Examen 1", date:"29 Octobre 2025",
@@ -3111,7 +3219,7 @@ const EXAMS = [
   }
 ];
 
-// ═══════════════ CASES DATA ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CASES DATA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const CASES = [
   {
     title:"Gestion de Véhicules Électriques (Examen 1)",
@@ -3153,7 +3261,7 @@ const CASES = [
   }
 ];
 
-// ═══════════════ EXAM BUILDER ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EXAM BUILDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let examsBuilt = false;
 function buildExams() {
   if (examsBuilt) return;
@@ -3170,7 +3278,7 @@ function buildExams() {
       </div>
       <div class="tp-body" style="padding:22px">
         <div class="alert info" style="margin-bottom:16px"><strong>Contexte :</strong> ${ex.context}</div>
-        <button class="btn btn-o" style="font-size:12px;margin-bottom:16px" onclick="revealAllEx('${ex.id}', this)">👁 Afficher toutes les réponses</button>
+        <button class="btn btn-o" style="font-size:12px;margin-bottom:16px" onclick="revealAllEx('${ex.id}', this)">👁️ Afficher toutes les réponses</button>
         <div id="ex-body-${ex.id}"></div>
       </div>`;
     container.appendChild(card);
@@ -3248,7 +3356,7 @@ function revealAllEx(exId, btn) {
   btn.disabled = true;
 }
 
-// ═══════════════ CASES BUILDER ═══════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CASES BUILDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let casesBuilt = false;
 function buildCases() {
   if (casesBuilt) return;
@@ -3288,7 +3396,17 @@ function buildCases() {
 <div class="tab" id="tab-appendix">
 <div class="slabel">Appendix - Source Extras</div>
 
-<div class="card" style="border-color:var(--yellow)">
+<div class="appendix-jump">
+  <a href="#appendix-nuget" onclick="event.preventDefault(); jumpToSection('appendix-nuget')">NuGet</a>
+  <a href="#appendix-vs" onclick="event.preventDefault(); jumpToSection('appendix-vs')">VS 2022</a>
+  <a href="#appendix-namespaces" onclick="event.preventDefault(); jumpToSection('appendix-namespaces')">Namespaces</a>
+  <a href="#appendix-collections" onclick="event.preventDefault(); jumpToSection('appendix-collections')">Collections</a>
+  <a href="#appendix-ef" onclick="event.preventDefault(); jumpToSection('appendix-ef')">EF Core</a>
+  <a href="#appendix-mvc" onclick="event.preventDefault(); jumpToSection('appendix-mvc')">MVC</a>
+  <a href="#appendix-visualizer" onclick="event.preventDefault(); jumpToSection('appendix-visualizer')">Visualizer</a>
+</div>
+
+<div class="card appendix-anchor" id="appendix-nuget" style="border-color:var(--yellow)">
   <h2>⚡ Formulaire Express — Ce que tu DOIS savoir par cœur</h2>
   <div class="grid g3">
     <div>
@@ -3335,7 +3453,7 @@ builder.HasKey(e => <span class="kw">new</span> {
 modelBuilder
     .ApplyConfiguration(<span class="kw">new</span> MaConfig());</code></pre>
     </div>
-    <div>
+    <div class="appendix-anchor" id="appendix-mvc">
       <h3>🌐 ASP.NET MVC — pattern CRUD</h3>
       <pre><code><span class="cm">// GET → retourner vue avec model</span>
 <span class="kw">public</span> ActionResult Index()
@@ -3383,7 +3501,7 @@ o.UseLazyLoadingProxies()
 </div>
 
 
-<div class="card">
+<div class="card appendix-anchor" id="appendix-vs">
   <h2>🖥️ Visual Studio 2022</h2>
   <p><strong>IDE principal pour .NET</strong> sur Windows.</p>
   <div class="grid g3">
@@ -3394,7 +3512,7 @@ o.UseLazyLoadingProxies()
 </div>
 
 <div class="grid g2">
-  <div class="card">
+  <div class="card appendix-anchor" id="appendix-namespaces">
     <h2>🏷️ Namespaces &amp; Propriétés</h2>
     <pre>using System;
 using System.Collections.Generic;
@@ -3431,7 +3549,7 @@ public static class StringExtensions
   </div>
 </div>
 
-<div class="card">
+<div class="card appendix-anchor" id="appendix-collections">
   <h2>🔍 LINQ &amp; Collections</h2>
   <div class="grid g2">
     <div>
@@ -3468,7 +3586,7 @@ public static class StringExtensions
 </div>
 
 <div class="grid g2">
-  <div class="card">
+  <div class="card appendix-anchor" id="appendix-ef">
     <h2>🗄️ EF Core Essentials</h2>
     <pre>class AppContext : DbContext
 {
@@ -3488,7 +3606,7 @@ var item = context.Etudiants.Find(id);
 context.Etudiants.Remove(item);
 context.SaveChanges();</pre>
   </div>
-  <div class="card">
+  <div class="card appendix-anchor" id="appendix-annotations">
     <h2>🏷️ Annotations, Fluent API, Migration</h2>
     <table>
       <tr><th>Annotation</th><th>Usage</th></tr>
@@ -3557,7 +3675,7 @@ o.UseLazyLoadingProxies();
   </div>
 </div>
 
-<div class="card">
+<div class="card appendix-anchor" id="appendix-visualizer">
   <h2>🔗 EF Visualizer Legacy</h2>
   <table>
     <tr><th>Relation</th><th>Exemple</th></tr>
@@ -3574,9 +3692,14 @@ o.UseLazyLoadingProxies();
 
 <script>
 applyLayoutMode();
+wireRouteTriggers();
+showFromHash();
 window.addEventListener('resize', applyLayoutMode);
 window.addEventListener('orientationchange', applyLayoutMode);
+window.addEventListener('hashchange', showFromHash);
 </script>
 
 </body>
 </html>
+
+
